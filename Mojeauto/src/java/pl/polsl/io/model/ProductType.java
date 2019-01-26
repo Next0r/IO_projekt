@@ -30,4 +30,14 @@ public abstract class ProductType {
     @Basic(optional = false)
     @Column(name = "PRICE")
     private Double price;
+    
+    /*public ProductType(){
+        
+    }
+    
+    public ProductType(String name, String description, Double price){
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }*/
 }

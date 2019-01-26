@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 /**
  *
@@ -16,6 +17,7 @@ import javax.persistence.OneToOne;
  * @author 
  */
 @Entity
+@Table(name = "CLIENT")
 public class Client {
     @Id
     @Basic(optional = false)
@@ -34,4 +36,14 @@ public class Client {
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="ACCOUNT_ID")
     private UserAccount userAccount;
+    
+    public Client(){
+    }
+    
+    public Client(String name, String surname, UserAccount account){
+        this.name = name;
+        this.surname = surname;
+        this.userAccount = account;
+    }
+    
 }
