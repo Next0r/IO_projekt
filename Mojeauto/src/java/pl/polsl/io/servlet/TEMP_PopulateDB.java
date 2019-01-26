@@ -15,6 +15,8 @@ import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ProductType;
 import pl.polsl.io.model.UserAccount;
+import pl.polsl.io.service.CookieManager;
+import pl.polsl.io.service.DatabaseManager;
 
 /**
  *
@@ -34,7 +36,11 @@ public class TEMP_PopulateDB extends HttpServlet {
      */
     @Resource
     private UserTransaction utx;
-
+    
+    
+    private DatabaseManager databaseManager;
+    private CookieManager cookieManager;
+      
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -47,16 +53,12 @@ public class TEMP_PopulateDB extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Cookie[] cookies = request.getCookies();
+        databaseManager = (DatabaseManager) request.getSession().getAttribute("databaseManager");
+        cookieManager = (CookieManager) request.getSession().getAttribute("cookieManager");
+        
+        
         String alreadyPopulated = "false";
-        if (cookies != null) {
-            for (Cookie c : cookies) {
-                if (c.getName().equals("alreadyPopulated")) {
-                    alreadyPopulated = c.getValue();
-                    break;
-                }
-            }
-        }
+        alreadyPopulated = cookieManager.getCookieValue("alreadyPopulated", request);
 
         if (alreadyPopulated.equals("true")) {
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);
@@ -71,40 +73,19 @@ public class TEMP_PopulateDB extends HttpServlet {
             Client client2 = new Client("Piotr", "Piotrowicz", acc2);
             Client client3 = new Client("Zuzanna", "Kapok", acc3);
             Client client4 = new Client("Jan", "Morszczyn", acc4);
-           
-
-            EntityManager em = null;
-            try {
-                System.out.println("START OF TRANSACTION");
-                utx.begin();
-                em = emf.createEntityManager();
-                em.persist(acc1);
-                em.persist(acc2);
-                em.persist(acc3);
-                em.persist(acc4);
-                em.persist(client1);
-                em.persist(client2);
-                em.persist(client3);
-                em.persist(client4);
-                utx.commit();
-                System.out.println("END OF TRANSACTION");
-
-            } catch (Exception e) {
-                throw new ServletException(e);
-            } finally {
-                if (em != null) {
-                    em.close();
-                }
-            }
+                 
+            databaseManager.addEntities(new Object[]{acc1, acc2, acc3, acc4,
+            client1, client2, client3, client4}, emf, utx);
 
             Cookie cookie = new Cookie("alreadyPopulated", "true");
-            cookie.setMaxAge(60 * 5);
+            //cookie.setMaxAge(60 * 5);
             response.addCookie(cookie);
-
+            
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         }
     }
-
+    
+    
     /**
      * Handles the HTTP <code>GET</code> method.
      *
