@@ -3,25 +3,23 @@ package pl.polsl.io.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import pl.polsl.io.model.Client;
 import pl.polsl.io.model.UserAccount;
+import pl.polsl.io.service.AccountManager;
 import pl.polsl.io.service.CookieManager;
 import pl.polsl.io.service.DatabaseManager;
 
 /**
  *
- * @author Sobocik
+ * @author Michal
  */
-public class TEMP_PopulateDB extends HttpServlet {
+public class LogInOut extends HttpServlet {
 
     /**
      * EntityManagerFactory injection field, used for creating EntityManager
@@ -35,11 +33,11 @@ public class TEMP_PopulateDB extends HttpServlet {
      */
     @Resource
     private UserTransaction utx;
-    
-    
+
     private DatabaseManager databaseManager;
     private CookieManager cookieManager;
-      
+    private AccountManager accountManager;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -51,40 +49,39 @@ public class TEMP_PopulateDB extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         databaseManager = (DatabaseManager) request.getSession().getAttribute("databaseManager");
         cookieManager = (CookieManager) request.getSession().getAttribute("cookieManager");
+        accountManager = (AccountManager) request.getSession().getAttribute("accountManager");
         
+
         
-        String alreadyPopulated = "false";
-        alreadyPopulated = cookieManager.getCookieValue("alreadyPopulated", request);
-
-        if (alreadyPopulated.equals("true")) {
-            request.getRequestDispatcher("Homepage.jsp").forward(request, response);
-        } else {
-
-            UserAccount acc1 = new UserAccount("nowak", "123");
-            UserAccount acc2 = new UserAccount("piotrowicz", "123");
-            UserAccount acc3 = new UserAccount("kapok", "123");
-            UserAccount acc4 = new UserAccount("leetgamer69", "123");
-
-            Client client1 = new Client("Adam", "Nowak", acc1);
-            Client client2 = new Client("Piotr", "Piotrowicz", acc2);
-            Client client3 = new Client("Zuzanna", "Kapok", acc3);
-            Client client4 = new Client("Jan", "Morszczyn", acc4);
-                 
-            databaseManager.addEntities(new Object[]{acc1, acc2, acc3, acc4,
-            client1, client2, client3, client4}, emf, utx);
-
-            Cookie cookie = new Cookie("alreadyPopulated", "true");
-            //cookie.setMaxAge(60 * 5);
-            response.addCookie(cookie);
-            
-            request.getRequestDispatcher("Homepage.jsp").forward(request, response);
+        String hidden = request.getParameter("hidden");
+        // handle log out
+        if(hidden != null){
+            request.getSession().setAttribute("currentUser", "");
+            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
+            return;
         }
+        
+        // handle log in
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        
+        if(accountManager.isCorrectLogInData(login, password, emf, utx)){
+            request.getSession().setAttribute("currentUser", login);
+            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
+        }
+        else{
+            // send account manager fail message
+            request.getSession().setAttribute("loginMessage", accountManager.getLoginMessage());
+            request.getRequestDispatcher("/LoginPage.jsp").forward(request, response);
+        }
+        
+        
+        
     }
-    
-    
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -112,5 +109,15 @@ public class TEMP_PopulateDB extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }

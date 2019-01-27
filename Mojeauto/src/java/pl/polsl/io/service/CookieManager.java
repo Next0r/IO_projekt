@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class CookieManager {
     
-    public void CookieManager(){};
+    public CookieManager(){}
     
     public String getCookieValue(String cookieName, HttpServletRequest request){
         if(cookieName == null){

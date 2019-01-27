@@ -8,6 +8,10 @@
         <servlet-name>Init</servlet-name>
         <servlet-class>pl.polsl.io.servlet.Init</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LogInOut</servlet-name>
+        <servlet-class>pl.polsl.io.servlet.LogInOut</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <url-pattern>/TEMP_PopulateDB/*</url-pattern>
@@ -24,6 +28,11 @@
         <servlet-name>Init</servlet-name>
         <url-pattern>/Init</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogInOut</servlet-name>
+        <url-pattern>/LogInOut</url-pattern>
+    </servlet-mapping>
+
     <session-config>
         <session-timeout>
             30

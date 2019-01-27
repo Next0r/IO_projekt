@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import pl.polsl.io.service.AccountManager;
 import pl.polsl.io.service.CookieManager;
 import pl.polsl.io.service.DatabaseManager;
 
@@ -29,10 +30,11 @@ public class Init extends HttpServlet {
 
         DatabaseManager databaseManager = new DatabaseManager();
         CookieManager cookieManager = new CookieManager();
+        AccountManager accountManager = new AccountManager(databaseManager);
         
         request.getSession().setAttribute("cookieManager", cookieManager);
         request.getSession().setAttribute("databaseManager", databaseManager);
-        
+        request.getSession().setAttribute("accountManager", accountManager);
         
         request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         
