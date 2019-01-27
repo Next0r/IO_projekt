@@ -35,7 +35,10 @@
         <title>Mojeauto</title>
     </head>
     <body>
-        
+        <%
+            // reset login message to avoid displaying again in login page
+            session.setAttribute("loginMessage", "");
+        %>
         <h1>Welcome to homepage!</h1>
         
         <div class="menu-button-group">
@@ -47,7 +50,7 @@
                     <button  onclick="window.location.href='MyAccountPage.jsp';">My Account</button>
                 </c:when>
                 <c:otherwise>
-                    <button  onclick="window.location.href='LoginPage.jsp';">Login</button>
+                    <button  onclick="window.location.href='LoginRegisterPage.jsp';">Login/Register</button>
                 </c:otherwise>
             </c:choose>
         </div>
@@ -70,20 +73,6 @@
             <input type="submit" value="Populate database with test entities" />
         </form>
         <hr>
-
-        <c:choose>
-            <c:when test="${not empty currentUser}">
-                <form action="MyAccountPage.jsp" method="get">
-                    <p><input type="submit" value="My account"/></p>
-                </form>
-            </c:when>
-            <c:otherwise>
-                <form action="LoginPage.jsp" method="get">
-                    <p><input type="submit" value="My account"/></p>
-                </form>
-            </c:otherwise>
-        </c:choose>
-
 
     </body>
 </html>

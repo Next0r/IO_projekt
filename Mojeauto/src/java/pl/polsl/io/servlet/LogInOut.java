@@ -74,7 +74,7 @@ public class LogInOut extends HttpServlet {
         else{
             // send account manager fail message
             request.getSession().setAttribute("loginMessage", accountManager.getLoginMessage());
-            request.getRequestDispatcher("/LoginPage.jsp").forward(request, response);
+            request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
         
         
