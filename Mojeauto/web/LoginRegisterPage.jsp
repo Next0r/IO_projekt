@@ -26,7 +26,7 @@
     <body>
         <h1>LoginRegisterPage</h1>
         <hr/>
-        <p>${loginMessage}</p>
+        <p>${accountMessage}</p>
         <table style="width: 50%;">
             <tr>
                 <td>
@@ -41,9 +41,7 @@
                 <td>
                     <p>I want to create new account!</p>
                     <hr/>
-                    <form action="" method="post">
-                        <p>Name: <input type="text" name="name"/></p>
-                        <p>Surname: <input type="text" name="surname"/></p>
+                    <form action="<%=request.getContextPath()%>/CreateAccount" method="post">
                         <p>Login: <input type="text" name="login"/></p>
                         <p>Password: <input type="password" name="password"/></p>
                         <p>Retype password: <input type="password" name="repassword"/></p>

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+import pl.polsl.io.model.Client;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.AccountManager;
 import pl.polsl.io.service.CookieManager;
@@ -19,7 +20,7 @@ import pl.polsl.io.service.DatabaseManager;
  *
  * @author Michal
  */
-public class LogInOut extends HttpServlet {
+public class AccountSettings extends HttpServlet {
 
     /**
      * EntityManagerFactory injection field, used for creating EntityManager
@@ -52,35 +53,24 @@ public class LogInOut extends HttpServlet {
         databaseManager = (DatabaseManager) request.getSession().getAttribute("databaseManager");
         cookieManager = (CookieManager) request.getSession().getAttribute("cookieManager");
         accountManager = (AccountManager) request.getSession().getAttribute("accountManager");
-        
 
-        
-        String hidden = request.getParameter("hidden");
-        // handle log out
-        if(hidden != null){
-            request.getSession().setAttribute("currentUser", "");
-            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
-            return;
+        UserAccount acc = (UserAccount) databaseManager
+                .getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+        Client cln = databaseManager.getClientEntityByAccount(acc, emf, utx);
+        if (cln != null ) {
+            if (cln.getName().equals("_") || cln.getSurname().equals("_")) {
+                request.getSession().setAttribute("clientName", null);
+                request.getSession().setAttribute("clientSurname", null);
+            } else {
+                request.getSession().setAttribute("clientName", cln.getName());
+                request.getSession().setAttribute("clientSurname", cln.getSurname());
+            }  
         }
-        
-        // handle log in
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        
-        if(accountManager.isCorrectLogInData(login, password, emf, utx)){
-            request.getSession().setAttribute("currentUser", login);
-            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
-        }
-        else{
-            // send account manager fail message
-            request.getSession().setAttribute("accountMessage", accountManager.getAccountMessage());
-            request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
-        }
-        
-        
-        
+        request.getRequestDispatcher("/AccountSettingsPage.jsp").forward(request, response);
+
     }
 
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -109,5 +99,14 @@ public class LogInOut extends HttpServlet {
         processRequest(request, response);
     }
 
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }

@@ -46,4 +46,28 @@ public class Client {
         this.userAccount = account;
     }
     
+    public String getName(){
+        return this.name;
+    }
+    
+    public String getSurname(){
+        return this.surname;
+    }
+
+    public Integer getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(Integer clientID) {
+        this.clientID = clientID;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+    
 }

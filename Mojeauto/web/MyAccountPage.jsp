@@ -11,9 +11,32 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>My account page</title>
+        <style>
+            .menu-button-group {
+                width:100%;
+            }
+            .menu-button-group button {
+                background-color: #4081e8;
+                border: 1px solid blue;
+                color: white;
+                cursor: pointer;
+                padding: 10px 20px;
+                width: 24.5%;
+            }
+            .menu-button-group button:hover {
+                background-color: #215dc4;
+            }   
+        </style>
     </head>
     <body>
-        
+        <h1>My account page</h1>
+        <div class="menu-button-group">
+            <button onclick="window.location.href = 'Homepage.jsp';">Home</button>
+            <button onclick="window.location.href = '<%=request.getContextPath()%>/AccountSettings';">Account settings</button>
+            <button>My products</button>
+            <button>My cars</button>
+        </div>
+
         <c:if test="${not empty currentUser}">
             <hr/>
             <p>Logged in as ${currentUser}</p>
@@ -21,10 +44,7 @@
                 <input type="hidden" name="hidden" value="logout"/>
                 <input type="submit" value="log out" />
             </form>
-	</c:if>
-    
-        <hr/>
-        <p>Here you can manage account, buy stuff, contact us etc.</p>
-        <a href="Homepage.jsp">Go to homepage</a>
+            <hr/>
+        </c:if>
     </body>
 </html>

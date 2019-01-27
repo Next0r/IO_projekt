@@ -47,5 +47,8 @@ public class UserAccount {
     public void setPassword(String password){
         this.password = password;
     }
-    
+
+    public Integer getAccountID(){
+        return this.accountID;
+    }
 }

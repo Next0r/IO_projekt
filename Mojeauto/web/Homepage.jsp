@@ -9,7 +9,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
-    <style>
+
+    
+    <head>
+        <style>
         
         .menu-button-group {
             width:100%;
@@ -29,22 +32,21 @@
         
         
     </style>
-    
-    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mojeauto</title>
     </head>
     <body>
         <%
             // reset login message to avoid displaying again in login page
-            session.setAttribute("loginMessage", "");
+            session.setAttribute("accountMessage", "");
         %>
         <h1>Welcome to homepage!</h1>
         
         <div class="menu-button-group">
-            <button  onclick="window.location.href='Homepage.jsp';">Home</button>
-            <button>View Offers</button>
-            <button>Buy</button>
+            <%--<button  onclick="window.location.href='Homepage.jsp';">Home</button>--%>
+            <button>Our products</button>
+            <button>Contact</button>
+            <button>Assistance request</button>
             <c:choose>
                 <c:when test="${not empty currentUser}">
                     <button  onclick="window.location.href='MyAccountPage.jsp';">My Account</button>
