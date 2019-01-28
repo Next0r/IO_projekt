@@ -4,6 +4,10 @@
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <servlet-class>pl.polsl.io.servlet.TEMP_PopulateDB</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>TEMP_PopulateDB</servlet-name>
+        <url-pattern>/TEMP_PopulateDB</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>Init</servlet-name>
         <servlet-class>pl.polsl.io.servlet.Init</servlet-class>
@@ -20,17 +24,13 @@
         <servlet-name>AccountSettings</servlet-name>
         <servlet-class>pl.polsl.io.servlet.AccountSettings</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>TEMP_PopulateDB</servlet-name>
-        <url-pattern>/TEMP_PopulateDB/*</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>Homepage</servlet-name>
         <jsp-file>/Homepage.jsp</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>Homepage</servlet-name>
-        <url-pattern>/Homepage/*</url-pattern>
+        <url-pattern>/Homepage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Init</servlet-name>

@@ -12,26 +12,7 @@
 
     
     <head>
-        <style>
-        
-        .menu-button-group {
-            width:100%;
-        }
-        
-        .menu-button-group button {
-            background-color: #4081e8;
-            border: 1px solid blue;
-            color: white;
-            cursor: pointer;
-            padding: 10px 20px;
-            width: 24.5%;
-        }
-        .menu-button-group button:hover {
-            background-color: #215dc4;
-        }   
-        
-        
-    </style>
+        <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Mojeauto</title>
     </head>
@@ -40,13 +21,13 @@
             // reset login message to avoid displaying again in login page
             session.setAttribute("accountMessage", "");
         %>
-        <h1>Welcome to homepage!</h1>
+        <h1>Welcome to Mojeauto!</h1>
         
         <div class="menu-button-group">
-            <%--<button  onclick="window.location.href='Homepage.jsp';">Home</button>--%>
-            <button>Our products</button>
-            <button>Contact</button>
-            <button>Assistance request</button>
+            <button  onclick="window.location.href='Homepage.jsp';">Home</button>
+            <button  onclick="window.location.href='OurProductsPage.jsp';">Our products</button>
+            <button  onclick="window.location.href='RequestAssistancePage.jsp';">Request assistance</button>
+            <button  onclick="window.location.href='ContactPage.jsp';">Contact</button>
             <c:choose>
                 <c:when test="${not empty currentUser}">
                     <button  onclick="window.location.href='MyAccountPage.jsp';">My Account</button>
@@ -55,9 +36,8 @@
                     <button  onclick="window.location.href='LoginRegisterPage.jsp';">Login/Register</button>
                 </c:otherwise>
             </c:choose>
+            <hr>
         </div>
-        
-        <hr>
         
         <div>What would you like to do?</div>
 
@@ -72,7 +52,7 @@
 
         <hr>
         <form action="<%=request.getContextPath()%>/TEMP_PopulateDB" method="POST">
-            <input type="submit" value="Populate database with test entities" />
+            <input type="submit" value="Populate database with test entities!" />
         </form>
         <hr>
 

@@ -1,0 +1,15 @@
+.menu-button-group {
+            width:100%;
+        }
+        
+.menu-button-group button {
+    background-color: #4081e8;
+    border: 1px solid blue;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    width: 19.5%;
+}
+.menu-button-group button:hover {
+    background-color: #215dc4;
+}   

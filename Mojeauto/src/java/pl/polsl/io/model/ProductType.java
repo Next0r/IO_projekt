@@ -2,6 +2,7 @@ package pl.polsl.io.model;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
  * @author 
  */
 @Entity
+@DiscriminatorColumn(name="REF_TYPE")
 public abstract class ProductType {
     
     @Id
@@ -31,13 +33,13 @@ public abstract class ProductType {
     @Column(name = "PRICE")
     private Double price;
     
-//    public ProductType(){
-//        
-//    }
-//    
-//    public ProductType(String name, String description, Double price){
-//        this.name = name;
-//        this.description = description;
-//        this.price = price;
-//    }
+    public ProductType(){
+        
+    }
+    
+    public ProductType(String name, String description, Double price){
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
 }

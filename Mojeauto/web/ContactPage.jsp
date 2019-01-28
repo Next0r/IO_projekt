@@ -6,11 +6,10 @@
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>My account page</title>
+        <title>Contact</title>
     </head>
     <body>
-        <h1>My account page</h1>
-        
+        <h1>Contact Page</h1>
          <div class="menu-button-group">
             <button  onclick="window.location.href='Homepage.jsp';">Home</button>
             <button  onclick="window.location.href='OurProductsPage.jsp';">Our products</button>
@@ -26,15 +25,13 @@
             </c:choose>
             <hr>
         </div>
-
-        <c:if test="${not empty currentUser}">
-            <hr/>
-            <p>Logged in as ${currentUser}</p>
-            <form action="<%=request.getContextPath()%>/LogInOut" method="post">
-                <input type="hidden" name="hidden" value="logout"/>
-                <input type="submit" value="log out" />
-            </form>
-            <hr/>
-        </c:if>
+        
+        <div>
+            Contact our personnel: <br>
+            698472905
+            krzysztofsobocik@gmail.com
+        </div>
+        
+        
     </body>
 </html>

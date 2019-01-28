@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
@@ -14,10 +15,13 @@ import javax.persistence.Id;
  */
 @Entity
 public class SingleService extends ProductType {
-    @Id
-    @Basic(optional = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SINGLESERVICE_ID")
-    private Integer singleServiceID;
     
+    public SingleService() {
+        
+    }
+    
+    public SingleService(String name, String description, Double price){
+        super(name,description,price);
+    }
+            
 }
