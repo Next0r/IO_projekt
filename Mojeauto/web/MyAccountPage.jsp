@@ -9,32 +9,26 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>My account page</title>
-        <style>
-            .menu-button-group {
-                width:100%;
-            }
-            .menu-button-group button {
-                background-color: #4081e8;
-                border: 1px solid blue;
-                color: white;
-                cursor: pointer;
-                padding: 10px 20px;
-                width: 24.5%;
-            }
-            .menu-button-group button:hover {
-                background-color: #215dc4;
-            }   
-        </style>
     </head>
     <body>
         <h1>My account page</h1>
+        
         <div class="menu-button-group">
-            <button onclick="window.location.href = 'Homepage.jsp';">Home</button>
-            <button onclick="window.location.href = '<%=request.getContextPath()%>/AccountSettings';">Account settings</button>
-            <button>My products</button>
-            <button>My cars</button>
+            <button  onclick="window.location.href='Homepage.jsp';">Home</button>
+            <button>Our products</button>
+            <button>Request assistance</button>
+            <button>Contact</button>
+            <c:choose>
+                <c:when test="${not empty currentUser}">
+                    <button  onclick="window.location.href='MyAccountPage.jsp';">My Account</button>
+                </c:when>
+                <c:otherwise>
+                    <button  onclick="window.location.href='LoginRegisterPage.jsp';">Login/Register</button>
+                </c:otherwise>
+            </c:choose>
         </div>
 
         <c:if test="${not empty currentUser}">
