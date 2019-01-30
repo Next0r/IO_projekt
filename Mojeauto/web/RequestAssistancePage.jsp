@@ -31,7 +31,7 @@
                             <p>Welcome, ${currentUser}!</p>
                             <form action="<%=request.getContextPath()%>/LogInOut" method="post">
                                 <input type="hidden" name="hidden" value="logout"/>
-                                <input type="submit" value="log out" />
+                                <input class="form-button2" type="submit" value="Log Out" />
                             </form>
                         </div>
                     </c:when>

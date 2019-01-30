@@ -14,11 +14,19 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Account settings page</title>
         <style>
-            .field-class{
-                float: right;
-                width: 60%;
+            .cell{
+                width: 33%;
             }
-        </style>
+            .text-box1{
+                width: 100%;
+            }
+            .input-field1{
+                width: 100%;
+            }
+            .form-button1{
+                width: 100%;
+            }
+            </style>
     </head>
     <body>
         <%-- Code that should executed on page load --%>
@@ -26,7 +34,7 @@
             // reset login message to avoid displaying again in login page
             //session.setAttribute("accountMessage", "");
         %>
-        
+
 
         <%-- Header section --%>
     <center>
@@ -44,7 +52,7 @@
                             <p>Welcome, ${currentUser}!</p>
                             <form action="<%=request.getContextPath()%>/LogInOut" method="post">
                                 <input type="hidden" name="hidden" value="logout"/>
-                                <input type="submit" value="log out" />
+                                <input class="form-button2" type="submit" value="Log Out" />
                             </form>
                         </div>
                     </c:when>
@@ -88,50 +96,85 @@
     <%-- Page content --%>
     <hr>
     <c:choose>
-            <c:when test="${empty clientName || empty clientSurname}">
-                <c:set var="clnName" value=""></c:set>
-                <c:set var="clnSurname" value=""></c:set>
-                <p>You still have to set up your personal details.</p>
-            </c:when>
-            <c:otherwise>
-                <c:set var="clnName" value="${clientName}"></c:set>
-                <c:set var="clnSurname" value="${clientSurname}"></c:set>
-            </c:otherwise>
-        </c:choose>
-    <div style="width:20%;">
-        <form action="" method="post">
-            <p>
-                Your name: <input class="field-class" type="text" name="name" value="${clnName}"/>
-                <input type="hidden" name="hidden" value="name"/>
-            <p><input type="submit" value="change name"/></p>
-            </p>
-        </form>
-        <form action="" method="post">
-            <p>
-                Your surname: <input class="field-class" type="text" name="surname" value="${clnSurname}"/>
-                <input type="hidden" name="hidden" value="surname"/>
-            <p><input type="submit" value="change surname"/></p>
-            </p>
-        </form>
+        <c:when test="${empty clientName || empty clientSurname}">
+            <c:set var="clnName" value=""></c:set>
+            <c:set var="clnSurname" value=""></c:set>
+            <div class="text-box2" style="margin-left: 13px;">You still have to set up your personal details.</div>
+        </c:when>
+        <c:otherwise>
+            <c:set var="clnName" value="${clientName}"></c:set>
+            <c:set var="clnSurname" value="${clientSurname}"></c:set>
+        </c:otherwise>
+    </c:choose>
+    <div class="table">
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Your name:</div> 
+            </div>
+            <div class="cell">
+                <form id="form1" action="" method="post">
+                    <input class="input-field1" type="text" name="name" value="${clnName}"/>
+                    <input type="hidden" name="hidden" value="name"/>
+                </form>
+            </div>
+            <div class="cell">
+                <input form="form1" class="form-button1" type="submit" value="Change Name"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Your surname:</div>  
+            </div>
+            <div class="cell">
+                <form id="form2" action="" method="post">
+                    <input class="input-field1" type="text" name="surname" value="${clnSurname}"/>
+                    <input type="hidden" name="hidden" value="surname"/>
 
+                </form>
+            </div>
+            <div class="cell">
+                <input form="form2" class="form-button1" type="submit" value="Change Surname"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Your login:</div> 
+            </div>
+            <div class="cell">
+                <form id="form3" action="" method="post">
+                    <input class="input-field1" type="text" name="login" value="${currentUser}"/>
+                    <input type="hidden" name="hidden" value="login"/>
 
-        <form action="" method="post">
-            <p>
-                Your login: <input class="field-class" type="text" name="login" value="${currentUser}"/>
-                <input type="hidden" name="hidden" value="login"/>
-            <p><input type="submit" value="change login"/></p>
-            </p>
-        </form>
-        <form action="" method="post">
-            <p>
-                Password: <input class="field-class" type="password" name="password" value="password"/>
-            </p>
-            <p>
-                Password retype: <input class="field-class" type="password" name="repassword" value="password"/>
-                <input type="hidden" name="hidden" value="password"/>
-            <p><input type="submit" value="change password"/></p>
-            </p>
-        </form>
+                </form>
+            </div>
+            <div class="cell">
+                <input form="form3" class="form-button1" type="submit" value="Change Login"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Password:</div> 
+            </div>
+            <div class="cell">
+                <form id="form4" action="" method="post">
+                    <input class="input-field1" type="password" name="password" value="password"/>
+                    <input type="hidden" name="hidden" value="password"/>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Password retype:</div> 
+            </div>
+            <div class="cell">
+                <input class="input-field1" form="form4" type="password" name="repassword" value="password"/>
+                <input form="form4" type="hidden" name="hidden" value="repassword"/>
+            </div>
+            <div class="cell">
+                <input class="form-button1" form="form4" type="submit" value="Change Password"/>
+            </div>
+        </div>
     </div>
+
 </body>
 </html>

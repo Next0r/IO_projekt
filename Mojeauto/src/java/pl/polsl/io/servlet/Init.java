@@ -6,9 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import pl.polsl.io.service.AccountManager;
-import pl.polsl.io.service.CookieManager;
-import pl.polsl.io.service.DatabaseManager;
+import pl.polsl.io.service.AccountService;
+import pl.polsl.io.service.CookieService;
+import pl.polsl.io.service.DatabaseService;
 
 /**
  *
@@ -28,9 +28,9 @@ public class Init extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DatabaseManager databaseManager = new DatabaseManager();
-        CookieManager cookieManager = new CookieManager();
-        AccountManager accountManager = new AccountManager(databaseManager);
+        DatabaseService databaseManager = new DatabaseService();
+        CookieService cookieManager = new CookieService();
+        AccountService accountManager = new AccountService(databaseManager);
         
         request.getSession().setAttribute("cookieManager", cookieManager);
         request.getSession().setAttribute("databaseManager", databaseManager);

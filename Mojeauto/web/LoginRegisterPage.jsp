@@ -14,16 +14,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>LoginPage</title>
         <style>
-            input{
-                float:right;
-                width: 40%;
-                margin-right: 20%;
-            }
-
-            td{
-                vertical-align: top;
-                width: 50%;
-            }
+            
         </style>
     </head>
     <body>
@@ -31,7 +22,7 @@
         <%
             // reset login message to avoid displaying again in login page
             // session.setAttribute("accountMessage", "");
-%>
+        %>
 
         <%-- Header section --%>
     <center>
@@ -49,7 +40,7 @@
                             <p>Welcome, ${currentUser}!</p>
                             <form action="<%=request.getContextPath()%>/LogInOut" method="post">
                                 <input type="hidden" name="hidden" value="logout"/>
-                                <input type="submit" value="log out" />
+                                <input class="form-button2" type="submit" value="Log Out" />
                             </form>
                         </div>
                     </c:when>
@@ -95,31 +86,40 @@
     <%-- Page content --%>
     <hr>
     <c:if test="${not empty accountMessage}">
-        <p>${accountMessage}</p>
+        <div class="text-box2" style="margin-left: 13px;">${accountMessage}</div>
     </c:if>
-    <table style="width: 50%;">
-        <tr>
-            <td>
-                I already have account...
-                <hr/>
+    <div class="table">
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1" style="width: 300px;">I already have account...</div>
+            </div>
+            <div class="cell">
+                <div class="text-box1" style="width: 300px;">I want to create a new account!</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
                 <form action="<%=request.getContextPath()%>/LogInOut" method="post">
-                    <p>Login: <input type="text" name="login"/></p>
-                    <p>Password: <input type="password" name="password"/></p>
-                    <p><input type="submit" value="Login"/></p>
-                </form>
-            </td>
-            <td>
-                I want to create a new account!
-                <hr/>
+                    <div class="text-box1">Login: </div>
+                    <input class="input-field1" type="text" name="login"/>
+                    <div class="text-box1">Password: </div>
+                    <input class="input-field1" type="password" name="password"/>
+                    <input class="form-button1" type="submit" value="Login"/>
+                </form> 
+            </div>
+            <div class="cell">
                 <form action="<%=request.getContextPath()%>/CreateAccount" method="post">
-                    <p>Login: <input type="text" name="login"/></p>
-                    <p>Password: <input type="password" name="password"/></p>
-                    <p>Retype password: <input type="password" name="repassword"/></p>
-                    <p><input type="submit" value="Register"></p>
+                    <div class="text-box1">Login: </div>
+                    <input class="input-field1" type="text" name="login"/>
+                    <div class="text-box1">Password: </div>
+                    <input class="input-field1" type="password" name="password"/>
+                    <div class="text-box1">Retype password: </div>
+                    <input class="input-field1" type="password" name="repassword"/>
+                    <input class="form-button1" type="submit" value="Register">
                 </form>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>        
+    </div>
 
 </body>
 </html>

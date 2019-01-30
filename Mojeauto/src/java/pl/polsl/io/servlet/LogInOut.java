@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.AccountManager;
-import pl.polsl.io.service.CookieManager;
-import pl.polsl.io.service.DatabaseManager;
+import pl.polsl.io.service.AccountService;
+import pl.polsl.io.service.CookieService;
+import pl.polsl.io.service.DatabaseService;
 
 /**
  *
@@ -34,9 +34,9 @@ public class LogInOut extends HttpServlet {
     @Resource
     private UserTransaction utx;
 
-    private DatabaseManager databaseManager;
-    private CookieManager cookieManager;
-    private AccountManager accountManager;
+    private DatabaseService databaseManager;
+    private CookieService cookieManager;
+    private AccountService accountManager;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,9 +49,9 @@ public class LogInOut extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        databaseManager = (DatabaseManager) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieManager) request.getSession().getAttribute("cookieManager");
-        accountManager = (AccountManager) request.getSession().getAttribute("accountManager");
+        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
+        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
+        accountManager = (AccountService) request.getSession().getAttribute("accountManager");
         
 
         

@@ -42,3 +42,70 @@
     width: calc(100% - 6px);
     height: 150px;
 }
+
+.table{
+    width: 700px;
+    display: table;
+    border-spacing: 10px;
+}
+.row{
+    display: table-row; 
+}
+.cell{
+    display: table-cell;
+    width: 50%;
+}
+
+.input-field1{
+    height: 25px;
+    border-radius: 5px;
+    width: 50%;
+    margin: 3px;
+}
+
+.form-button1{
+    color: white;
+    width: 50%;
+    background-color: #4081e8;
+    border: 1px solid blue;
+    height: 25px;
+    margin: 3px;
+}
+
+.form-button1:hover{
+    background-color: #215dc4;
+}
+
+.form-button2{
+    color: white;
+    width: 50%;
+    background-color: #ffa114;
+    border: 1px solid #b7730c;
+    height: 25px;
+    margin: 3px;
+}
+
+.form-button2:hover{
+    background-color: #c97e0c;
+}
+
+.text-box1{
+    background-color: #4081e8;
+    color: white;
+    width: 50%;
+    height: 25px;
+    padding: 3.5px;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+.text-box2{
+    background-color: #ffa114;
+    color: white;
+    width: 500px;
+    height: 25px;
+    padding: 3.5px;
+    border-radius: 5px;
+    margin: 3px;
+}
+

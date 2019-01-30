@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Michal
  */
-public class CookieManager {
+public class CookieService {
     
-    public CookieManager(){}
+    public CookieService(){}
     
     public String getCookieValue(String cookieName, HttpServletRequest request){
         if(cookieName == null){

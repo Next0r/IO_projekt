@@ -10,9 +10,9 @@ import pl.polsl.io.model.UserAccount;
  *
  * @author Michal
  */
-public class DatabaseManager {
+public class DatabaseService {
 
-    public DatabaseManager() {
+    public DatabaseService() {
     }
 
     public void addEntities(Object[] entities, EntityManagerFactory emf, UserTransaction utx) {

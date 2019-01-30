@@ -18,8 +18,8 @@ import pl.polsl.io.model.Client;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.Package;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.CookieManager;
-import pl.polsl.io.service.DatabaseManager;
+import pl.polsl.io.service.CookieService;
+import pl.polsl.io.service.DatabaseService;
 
 /**
  *
@@ -41,8 +41,8 @@ public class TEMP_PopulateDB extends HttpServlet {
     private UserTransaction utx;
     
     
-    private DatabaseManager databaseManager;
-    private CookieManager cookieManager;
+    private DatabaseService databaseManager;
+    private CookieService cookieManager;
       
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -56,8 +56,8 @@ public class TEMP_PopulateDB extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        databaseManager = (DatabaseManager) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieManager) request.getSession().getAttribute("cookieManager");
+        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
+        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
         
         if (databaseManager.getUserAccountEntity("nowak", "123", emf) != null){
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);

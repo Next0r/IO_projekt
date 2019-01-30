@@ -8,12 +8,12 @@ import pl.polsl.io.model.UserAccount;
  *
  * @author Michal
  */
-public class AccountManager {
+public class AccountService {
     
     private String accountMessage;
-    private DatabaseManager databaseManager;
+    private DatabaseService databaseManager;
     
-    public AccountManager(DatabaseManager databaseManager){
+    public AccountService(DatabaseService databaseManager){
         this.databaseManager = databaseManager;
     }
        
@@ -27,12 +27,12 @@ public class AccountManager {
             return false;
         }
         if(login.isEmpty() || password.isEmpty()){
-            accountMessage = "Login and password cannot be empty";
+            accountMessage = "Login and password cannot be empty.";
             return false;
         }
         UserAccount acc = (UserAccount) databaseManager.getUserAccountEntity(login, password, emf);
         if(acc == null){
-            accountMessage = "Incorrect login or password";
+            accountMessage = "Incorrect login or password.";
             return false;
         }
         return true;
