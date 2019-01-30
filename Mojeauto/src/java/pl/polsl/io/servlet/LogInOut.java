@@ -59,6 +59,8 @@ public class LogInOut extends HttpServlet {
         // handle log out
         if(hidden != null){
             request.getSession().setAttribute("currentUser", "");
+            request.getSession().setAttribute("clientName", "");
+            request.getSession().setAttribute("clientSurname", "");
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
             return;
         }
