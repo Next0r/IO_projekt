@@ -28,13 +28,13 @@ public class Init extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        DatabaseService databaseManager = new DatabaseService();
-        CookieService cookieManager = new CookieService();
-        AccountService accountManager = new AccountService(databaseManager);
+        DatabaseService databaseService = new DatabaseService();
+        CookieService cookieService = new CookieService();
+        AccountService accountService = new AccountService(databaseService);
         
-        request.getSession().setAttribute("cookieManager", cookieManager);
-        request.getSession().setAttribute("databaseManager", databaseManager);
-        request.getSession().setAttribute("accountManager", accountManager);
+        request.getSession().setAttribute("cookieService", cookieService);
+        request.getSession().setAttribute("databaseService", databaseService);
+        request.getSession().setAttribute("accountService", accountService);
         
         request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         

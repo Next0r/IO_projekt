@@ -34,9 +34,9 @@ public class LogInOut extends HttpServlet {
     @Resource
     private UserTransaction utx;
 
-    private DatabaseService databaseManager;
-    private CookieService cookieManager;
-    private AccountService accountManager;
+    private DatabaseService databaseService;
+    private CookieService cookieService;
+    private AccountService accountService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,9 +49,9 @@ public class LogInOut extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
-        accountManager = (AccountService) request.getSession().getAttribute("accountManager");
+        databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
+        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
+        accountService = (AccountService) request.getSession().getAttribute("accountService");
         
 
         
@@ -67,13 +67,13 @@ public class LogInOut extends HttpServlet {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         
-        if(accountManager.isCorrectLogInData(login, password, emf, utx)){
+        if(accountService.isCorrectLogInData(login, password, emf, utx)){
             request.getSession().setAttribute("currentUser", login);
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
         }
         else{
             // send account manager fail message
-            request.getSession().setAttribute("accountMessage", accountManager.getAccountMessage());
+            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
             request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
         

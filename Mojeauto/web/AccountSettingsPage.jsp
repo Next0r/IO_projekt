@@ -26,7 +26,7 @@
             .form-button1{
                 width: 100%;
             }
-            </style>
+        </style>
     </head>
     <body>
         <%-- Code that should executed on page load --%>
@@ -95,24 +95,24 @@
     </center>
     <%-- Page content --%>
     <hr>
-    <c:choose>
-        <c:when test="${empty clientName || empty clientSurname}">
-            <c:set var="clnName" value=""></c:set>
-            <c:set var="clnSurname" value=""></c:set>
-            <div class="text-box2" style="margin-left: 13px;">You still have to set up your personal details.</div>
-        </c:when>
-        <c:otherwise>
-            <c:set var="clnName" value="${clientName}"></c:set>
-            <c:set var="clnSurname" value="${clientSurname}"></c:set>
-        </c:otherwise>
-    </c:choose>
+    <c:if test="${not empty accountMessage}">
+        <div class="text-box2" style="margin-left: 13px;">${accountMessage}</div>
+    </c:if>
+
+    <c:set var="clnName" value="${clientName}"></c:set>
+    <c:set var="clnSurname" value="${clientSurname}"></c:set>
+
+    <c:if test="${empty clientName || empty clientSurname}">
+        <div class="text-box2" style="margin-left: 13px;">You still have to set up your personal details.</div>
+    </c:if>
+
     <div class="table">
         <div class="row">
             <div class="cell">
                 <div class="text-box1">Your name:</div> 
             </div>
             <div class="cell">
-                <form id="form1" action="" method="post">
+                <form id="form1" action="<%=request.getContextPath()%>/AccountSettings" method="post">
                     <input class="input-field1" type="text" name="name" value="${clnName}"/>
                     <input type="hidden" name="hidden" value="name"/>
                 </form>
@@ -126,7 +126,7 @@
                 <div class="text-box1">Your surname:</div>  
             </div>
             <div class="cell">
-                <form id="form2" action="" method="post">
+                <form id="form2" action="<%=request.getContextPath()%>/AccountSettings" method="post">
                     <input class="input-field1" type="text" name="surname" value="${clnSurname}"/>
                     <input type="hidden" name="hidden" value="surname"/>
 
@@ -141,7 +141,7 @@
                 <div class="text-box1">Your login:</div> 
             </div>
             <div class="cell">
-                <form id="form3" action="" method="post">
+                <form id="form3" action="<%=request.getContextPath()%>/AccountSettings" method="post">
                     <input class="input-field1" type="text" name="login" value="${currentUser}"/>
                     <input type="hidden" name="hidden" value="login"/>
 
@@ -156,8 +156,8 @@
                 <div class="text-box1">Password:</div> 
             </div>
             <div class="cell">
-                <form id="form4" action="" method="post">
-                    <input class="input-field1" type="password" name="password" value="password"/>
+                <form id="form4" action="<%=request.getContextPath()%>/AccountSettings" method="post">
+                    <input class="input-field1" type="password" name="password" value="" placeholder="password"/>
                     <input type="hidden" name="hidden" value="password"/>
                 </form>
             </div>
@@ -167,8 +167,7 @@
                 <div class="text-box1">Password retype:</div> 
             </div>
             <div class="cell">
-                <input class="input-field1" form="form4" type="password" name="repassword" value="password"/>
-                <input form="form4" type="hidden" name="hidden" value="repassword"/>
+                <input class="input-field1" form="form4" type="password" name="repassword" value="" placeholder="password"/>
             </div>
             <div class="cell">
                 <input class="form-button1" form="form4" type="submit" value="Change Password"/>

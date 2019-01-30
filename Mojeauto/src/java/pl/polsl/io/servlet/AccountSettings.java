@@ -35,9 +35,9 @@ public class AccountSettings extends HttpServlet {
     @Resource
     private UserTransaction utx;
 
-    private DatabaseService databaseManager;
-    private CookieService cookieManager;
-    private AccountService accountManager;
+    private DatabaseService databaseService;
+    private CookieService cookieService;
+    private AccountService accountService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -50,21 +50,68 @@ public class AccountSettings extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
-        accountManager = (AccountService) request.getSession().getAttribute("accountManager");
+        databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
+        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
+        accountService = (AccountService) request.getSession().getAttribute("accountService");
 
-        UserAccount acc = (UserAccount) databaseManager
+        // get data from settings form
+        String hidden = request.getParameter("hidden");
+        String name = request.getParameter("name");
+        String surname = request.getParameter("surname");
+        String login = request.getParameter("login");
+        String password = request.getParameter("password");
+        String repassword = request.getParameter("repassword");
+
+        UserAccount acc = (UserAccount) databaseService
                 .getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
-        Client cln = databaseManager.getClientEntityByAccount(acc, emf, utx);
-        if (cln != null ) {
-            if (cln.getName().equals("_") || cln.getSurname().equals("_")) {
+        Client cln = databaseService.getClientEntityByAccount(acc, emf, utx);
+        if (cln != null) {
+            // changing user parameters
+            if (hidden != null) {
+                // if user want to change something
+                String changable = accountService.verifyChangedParameter(hidden, new String[]{name, surname, login, password, repassword}, emf);
+                if (changable != null) {
+                    // changable contains value of parameter that can be changed
+                    // hidden contains name of this parameter in db
+                    if (databaseService.isUserAccountField(hidden)) {
+                        // account param should be changed
+                        try {
+                            databaseService.updateUserAccountParameter(hidden, changable, acc.getAccountID(), emf, utx);
+                            // if login has been changed update current user
+                            if (hidden.equals("login")) {
+                                request.getSession().setAttribute("currentUser", login);
+                            }
+                            request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
+                        } catch (Exception e) {
+                            request.getSession().setAttribute("accountMessage", "Oops! Something went wrong! Try again later.");
+                        }
+                    } else {
+                        // client param shoudl be changed
+                        try {
+                            databaseService.updateClientParameter(hidden, changable, cln.getClientID(), emf, utx);
+                            request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
+                        } catch (Exception e) {
+                            request.getSession().setAttribute("accountMessage", "Oops! Something went wrong! Try again later.");
+                        }
+                    }
+                } else {
+                    // print fail message
+                    request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+                }
+            }
+            // reflesh client data
+            cln = databaseService.getClientEntityByAccount(acc, emf, utx);
+            // fetching user paramters to webpage
+            if (cln.getName().equals("_")) {
                 request.getSession().setAttribute("clientName", null);
-                request.getSession().setAttribute("clientSurname", null);
             } else {
                 request.getSession().setAttribute("clientName", cln.getName());
+            }
+            if (cln.getSurname().equals("_")) {
+                request.getSession().setAttribute("clientSurname", null);
+            } else {
                 request.getSession().setAttribute("clientSurname", cln.getSurname());
-            }  
+            }
         }
         request.getRequestDispatcher("/AccountSettingsPage.jsp").forward(request, response);
 

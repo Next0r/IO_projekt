@@ -34,9 +34,9 @@ public class CreateAccount extends HttpServlet {
     @Resource
     private UserTransaction utx;
 
-    private DatabaseService databaseManager;
-    private CookieService cookieManager;
-    private AccountService accountManager;
+    private DatabaseService databaseService;
+    private CookieService cookieService;
+    private AccountService accountService;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -49,24 +49,24 @@ public class CreateAccount extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
-        accountManager = (AccountService) request.getSession().getAttribute("accountManager");
+        databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
+        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
+        accountService = (AccountService) request.getSession().getAttribute("accountService");
         
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         String repassword = request.getParameter("repassword");
         
-        if(accountManager.isCorrectRegisterData(login, password, repassword, emf, utx)){
+        if(accountService.isCorrectRegisterData(login, password, repassword, emf, utx)){
             UserAccount acc = new UserAccount(login, password);
             Client client = new Client("_", "_", acc);
-            databaseManager.addEntities(new Object[]{acc, client}, emf, utx);
-            request.getSession().setAttribute("accountMessage", accountManager.getAccountMessage());
+            databaseService.addEntities(new Object[]{acc, client}, emf, utx);
+            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
             request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
         else{
             // print register fail message
-            request.getSession().setAttribute("accountMessage", accountManager.getAccountMessage());
+            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
             request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
         
