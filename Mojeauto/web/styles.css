@@ -1,15 +1,44 @@
+*{
+    box-sizing: border-box;
+}
+
 .menu-button-group {
-            width:100%;
-        }
-        
+    border-spacing: 3px;
+    display: table;
+    width:100%;
+}
+
 .menu-button-group button {
+    display: table-cell;
     background-color: #4081e8;
     border: 1px solid blue;
     color: white;
     cursor: pointer;
     padding: 10px 20px;
-    width: 19.5%;
+    width: 20%;
 }
 .menu-button-group button:hover {
     background-color: #215dc4;
-}   
+}
+
+.login-status{
+    vertical-align: middle;
+    color: white;
+    display: table-cell;
+    width: 20%;
+}
+
+.header-banner{
+    vertical-align: middle;
+    color: white;
+    display: table-cell;
+    width: 80%;
+}
+
+.header-container{
+    display: table;
+    background-color: #4081e8;
+    border: 1px solid blue;
+    width: calc(100% - 6px);
+    height: 150px;
+}
