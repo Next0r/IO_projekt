@@ -69,7 +69,6 @@
     background-color: #4081e8;
     border: 1px solid blue;
     height: 25px;
-    margin: 3px;
 }
 
 .form-button1:hover{
@@ -103,7 +102,7 @@
     background-color: #ffa114;
     color: white;
     width: 500px;
-    height: 25px;
+    flex-wrap: wrap;
     padding: 3.5px;
     border-radius: 5px;
     margin: 3px;

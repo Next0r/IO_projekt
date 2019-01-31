@@ -9,11 +9,17 @@
         <title>Add vehicle page</title>
         <style>
             .cell{
-                width: 20%;
+                width: 50%;
             }
             .text-box1{
                 width: 100%;
                 margin: 0;
+            }
+            .input-field1{
+                width: 100%;
+            }
+            .table{
+                width: 400px;
             }
         </style>
     </head>
@@ -82,14 +88,56 @@
     </center>
     <%-- Page content --%>
     <hr>
-    <c:if test="${not empty accountMessage}">
-        <div class="text-box2" style="margin-left: 10px; width: 500px;">${accountMessage}</div>
+    <c:if test="${not empty resultMessage}">
+        <div class="text-box2" style="margin-left: 10px; width: 500px;">${resultMessage}</div>
         <%
-            session.setAttribute("accountMessage", "");
+            session.setAttribute("resultMessage", "");
         %>
     </c:if>
-    
-    
+    <div class="table">
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Brand</div>
+            </div>
+            <div class="cell">
+                <input form="form5" class="input-field1" type="text" name="brand"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Model</div>
+            </div>
+            <div class="cell">
+                <input form="form5" class="input-field1" type="text" name="model"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">License Number</div>
+            </div>
+            <div class="cell">
+                <input form="form5" class="input-field1" type="text" name="lnumber"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                <div class="text-box1">Production Year</div>
+            </div>
+            <div class="cell">
+                <input form="form5" class="input-field1" type="text" name="pyear"/>
+            </div>
+        </div>
+    </div>
+    <div class="table" style="margin-top: -6px;">
+        <div class="row">
+            <div class="cell">
+                <form id="form5" action="<%=request.getContextPath()%>/ManageVehicles" method="post">
+                    <input type="hidden" name="hidden" value="add"/>
+                    <input class="form-button1" style="width: calc(50% - 5px);" type="submit" value="Add Vehicle"/>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

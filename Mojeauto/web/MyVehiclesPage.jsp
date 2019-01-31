@@ -82,10 +82,10 @@
     </center>
     <%-- Page content --%>
     <hr>
-    <c:if test="${not empty accountMessage}">
-        <div class="text-box2" style="margin-left: 10px; width: 500px;">${accountMessage}</div>
+    <c:if test="${not empty resultMessage}">
+        <div class="text-box2" style="margin-left: 10px; margin-bottom: 0px; width: 500px;">${resultMessage}</div>
         <%
-            session.setAttribute("accountMessage", "");
+            session.setAttribute("resultMessage", "");
         %>
     </c:if>
     <c:choose>

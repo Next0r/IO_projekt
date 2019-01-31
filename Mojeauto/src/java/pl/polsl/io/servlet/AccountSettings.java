@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.AccountService;
+import pl.polsl.io.service.InputDataService;
 import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 
@@ -37,7 +37,7 @@ public class AccountSettings extends HttpServlet {
 
     private DatabaseService databaseService;
     private CookieService cookieService;
-    private AccountService accountService;
+    private InputDataService inputDataService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,15 +52,15 @@ public class AccountSettings extends HttpServlet {
             throws ServletException, IOException {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
-        accountService = (AccountService) request.getSession().getAttribute("accountService");
+        inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         // get data from settings form
         String hidden = request.getParameter("hidden");
-        String name = request.getParameter("name");
-        String surname = request.getParameter("surname");
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        String repassword = request.getParameter("repassword");
+        String name = inputDataService.nullStringTrim(request.getParameter("name"));
+        String surname = inputDataService.nullStringTrim(request.getParameter("surname"));
+        String login = inputDataService.nullStringTrim(request.getParameter("login"));
+        String password = inputDataService.nullStringTrim(request.getParameter("password"));
+        String repassword = inputDataService.nullStringTrim(request.getParameter("repassword"));
 
         UserAccount acc = null;
         Client cln = null;
@@ -77,10 +77,10 @@ public class AccountSettings extends HttpServlet {
                 // if user want to change something
                 String changable = null;
                 try {
-                    changable = accountService.verifyChangedParameter(hidden, new String[]{name, surname, login, password, repassword}, emf);
+                    changable = inputDataService.verifyChangedParameter(hidden, new String[]{name, surname, login, password, repassword}, emf);
                 } catch (Exception e) {
                     // db exception
-                    accountService.generateErrorMessage();
+                    inputDataService.generateErrorResultMessage();
                 }
                 if (changable != null) {
                     // changable contains value of parameter that can be changed
@@ -93,24 +93,24 @@ public class AccountSettings extends HttpServlet {
                             if (hidden.equals("login")) {
                                 request.getSession().setAttribute("currentUser", login);
                             }
-                            request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
+                            inputDataService.setResultMessageAttribute("Your " + hidden + " has been successfully updated.", request);
                         } catch (Exception e) {
-                            accountService.generateErrorMessage();
-                            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+                            inputDataService.generateErrorResultMessage();
+                            inputDataService.setResultMessageAttribute(null, request);
                         }
                     } else {
                         // client param shoudl be changed
                         try {
                             databaseService.updateClientParameter(hidden, changable, cln.getClientID(), emf, utx);
-                            request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
+                            inputDataService.setResultMessageAttribute("Your " + hidden + " has been successfully updated.", request);
                         } catch (Exception e) {
-                            accountService.generateErrorMessage();
-                            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+                            inputDataService.generateErrorResultMessage();
+                            inputDataService.setResultMessageAttribute(null, request);
                         }
                     }
                 } else {
                     // print fail message
-                    request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+                    inputDataService.setResultMessageAttribute(null, request);
                 }
             }
             // reflesh client data
@@ -118,8 +118,8 @@ public class AccountSettings extends HttpServlet {
                 cln = databaseService.getClientEntityByAccount(acc, emf);
             } catch (Exception e) {
                 // db exception
-                accountService.generateErrorMessage();
-                request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+                inputDataService.generateErrorResultMessage();
+                inputDataService.setResultMessageAttribute(null, request);
             }
             // fetching user paramters to webpage
             if (cln.getName().equals("_")) {

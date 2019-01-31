@@ -155,12 +155,30 @@ public class DatabaseService {
         if (carId == null) {
             return null;
         }
-        ClientCar car = null;
+        ClientCar car;
         EntityManager em;
         em = emf.createEntityManager();
         try {
             car = (ClientCar) em.createQuery("select c from ClientCar c where c.clientCarID = :p1")
                     .setParameter("p1", carId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            car = null;
+        }
+        return car;
+    }
+    
+        public ClientCar getClientCarByLicenseNumber(String licenseNumber, EntityManagerFactory emf) throws Exception {
+
+        if (licenseNumber == null) {
+            return null;
+        }
+        ClientCar car;
+        EntityManager em;
+        em = emf.createEntityManager();
+        try {
+            car = (ClientCar) em.createQuery("select c from ClientCar c where c.licenseNumber = :p1")
+                    .setParameter("p1", licenseNumber.toUpperCase())
                     .getSingleResult();
         } catch (NoResultException e) {
             car = null;

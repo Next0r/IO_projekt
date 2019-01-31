@@ -21,7 +21,7 @@
         <%-- Code that should executed on page load --%>
         <%
             // reset login message to avoid displaying again in login page
-            // session.setAttribute("accountMessage", "");
+            // session.setAttribute("resultMessage", "");
         %>
 
         <%-- Header section --%>
@@ -85,8 +85,11 @@
     --%>
     <%-- Page content --%>
     <hr>
-    <c:if test="${not empty accountMessage}">
-        <div class="text-box2" style="margin-left: 13px;">${accountMessage}</div>
+    <c:if test="${not empty resultMessage}">
+        <div class="text-box2" style="margin-left: 13px;">${resultMessage}</div>
+        <%
+            request.setAttribute("resultMessage", "");
+        %>
     </c:if>
     <div class="table">
         <div class="row">
@@ -104,7 +107,7 @@
                     <input class="input-field1" type="text" name="login"/>
                     <div class="text-box1">Password: </div>
                     <input class="input-field1" type="password" name="password"/>
-                    <input class="form-button1" type="submit" value="Login"/>
+                    <input class="form-button1" style="margin: 3px;" type="submit" value="Login"/>
                 </form> 
             </div>
             <div class="cell">
@@ -115,7 +118,7 @@
                     <input class="input-field1" type="password" name="password"/>
                     <div class="text-box1">Retype password: </div>
                     <input class="input-field1" type="password" name="repassword"/>
-                    <input class="form-button1" type="submit" value="Register">
+                    <input class="form-button1" style="margin: 3px;" type="submit" value="Register">
                 </form>
             </div>
         </div>        

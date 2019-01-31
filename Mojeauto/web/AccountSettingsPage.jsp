@@ -31,7 +31,7 @@
     <body>
         <%-- Code that should executed on page load --%>
         <%
-            
+
         %>
 
 
@@ -94,10 +94,10 @@
     </center>
     <%-- Page content --%>
     <hr>
-    <c:if test="${not empty accountMessage}">
-        <div class="text-box2" style="margin-left: 13px;">${accountMessage}</div>
+    <c:if test="${not empty resultMessage}">
+        <div class="text-box2" style="margin-left: 10px; margin-bottom: 6px;">${resultMessage}</div>
         <%
-            session.setAttribute("accountMessage", "");
+            session.setAttribute("resultMessage", "");
         %>
     </c:if>
 
@@ -105,10 +105,10 @@
     <c:set var="clnSurname" value="${clientSurname}"></c:set>
 
     <c:if test="${empty clientName || empty clientSurname}">
-        <div class="text-box2" style="margin-left: 13px;">You still have to set up your personal details.</div>
+        <div class="text-box2" style="margin-left: 10px;">You still have to set up your personal details.</div>
     </c:if>
 
-    <div class="table">
+    <div class="table" style="margin-left: -3px; margin-top: -3px">
         <div class="row">
             <div class="cell">
                 <div class="text-box1">Your name:</div> 

@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import pl.polsl.io.service.AccountService;
+import pl.polsl.io.service.InputDataService;
 import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 
@@ -30,11 +30,11 @@ public class Init extends HttpServlet {
 
         DatabaseService databaseService = new DatabaseService();
         CookieService cookieService = new CookieService();
-        AccountService accountService = new AccountService(databaseService);
+        InputDataService inputDataService = new InputDataService(databaseService);
         
         request.getSession().setAttribute("cookieService", cookieService);
         request.getSession().setAttribute("databaseService", databaseService);
-        request.getSession().setAttribute("accountService", accountService);
+        request.getSession().setAttribute("inputDataService", inputDataService);
         
         request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         

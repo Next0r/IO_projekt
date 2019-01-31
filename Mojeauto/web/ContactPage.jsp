@@ -12,7 +12,7 @@
         <%-- Code that should executed on page load --%>
         <%
             // reset login message to avoid displaying again in login page
-            session.setAttribute("accountMessage", "");
+            session.setAttribute("resultMessage", "");
         %>
 
         <%-- Header section --%>
