@@ -69,11 +69,11 @@ public class ManageVehicles extends HttpServlet {
             try {
                 ClientCar car = databaseService.getClientCarByCarId(removedCarId, emf);
                 databaseService.deleteEntity(car, emf, utx);
-                request.getSession().setAttribute("accoutMessage", "Vehicle has been removed.");
+                request.getSession().setAttribute("accountMessage", "Vehicle has been removed.");
             } catch (Exception e) {
                 // db exception
                 accountService.generateErrorMessage();
-                request.getSession().setAttribute("accoutMessage", accountService.getAccountMessage());
+                request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
             }
 
         }

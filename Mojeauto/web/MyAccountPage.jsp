@@ -11,8 +11,7 @@
     <body>
         <%-- Code that should executed on page load --%>
         <%
-            // reset login message to avoid displaying again in login page
-            session.setAttribute("accountMessage", "");
+            
         %>
 
         <%-- Header section --%>
@@ -68,7 +67,7 @@
         <div class="menu-button-group" style="margin: 10px auto; width: 80%;">
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/AccountSettings';">Account Settings</button>
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/ManageVehicles';">My Vehicles</button>
-            <button  onclick="window.location.href = '';">SubPage3</button>
+            <button  onclick="window.location.href = 'AddVehiclePage.jsp';">Add Vehicle</button>
             <button  onclick="window.location.href = '';">SubPage4</button>
         </div>
     </center>
