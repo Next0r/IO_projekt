@@ -20,7 +20,7 @@
         <div class="header-container">
             <%-- Banner --%>
             <div class ="header-banner">
-                <h1>My account page</h1>
+                <h1>My vehicles page</h1>
             </div>
 
             <%-- Account status --%> 

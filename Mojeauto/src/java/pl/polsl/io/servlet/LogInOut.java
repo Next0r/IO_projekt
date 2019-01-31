@@ -52,35 +52,36 @@ public class LogInOut extends HttpServlet {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         accountService = (AccountService) request.getSession().getAttribute("accountService");
-        
 
-        
         String hidden = request.getParameter("hidden");
         // handle log out
-        if(hidden != null){
+        if (hidden != null) {
             request.getSession().setAttribute("currentUser", "");
             request.getSession().setAttribute("clientName", "");
             request.getSession().setAttribute("clientSurname", "");
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
             return;
         }
-        
+
         // handle log in
         String login = request.getParameter("login");
         String password = request.getParameter("password");
-        
-        if(accountService.isCorrectLogInData(login, password, emf, utx)){
+        Boolean isCorrectUserData = false;
+        try {
+            isCorrectUserData = accountService.isCorrectLogInData(login, password, emf, utx);
+        } catch (Exception e) {
+            accountService.generateErrorMessage();
+        }
+
+        if (isCorrectUserData) {
             request.getSession().setAttribute("currentUser", login);
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
-        }
-        else{
+        } else {
             // send account manager fail message
             request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
             request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
-        
-        
-        
+
     }
 
     /**
@@ -110,6 +111,5 @@ public class LogInOut extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
 
 }

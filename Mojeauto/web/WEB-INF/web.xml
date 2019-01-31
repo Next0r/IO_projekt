@@ -4,6 +4,10 @@
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <servlet-class>pl.polsl.io.servlet.TEMP_PopulateDB</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManageVehicles</servlet-name>
+        <servlet-class>pl.polsl.io.servlet.ManageVehicles</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <url-pattern>/TEMP_PopulateDB</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>AccountSettings</servlet-name>
         <url-pattern>/AccountSettings</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageVehicles</servlet-name>
+        <url-pattern>/ManageVehicles</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

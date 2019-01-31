@@ -62,14 +62,26 @@ public class AccountSettings extends HttpServlet {
         String password = request.getParameter("password");
         String repassword = request.getParameter("repassword");
 
-        UserAccount acc = (UserAccount) databaseService
-                .getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
-        Client cln = databaseService.getClientEntityByAccount(acc, emf, utx);
+        UserAccount acc = null;
+        Client cln = null;
+
+        try {
+            acc = (UserAccount) databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+            cln = databaseService.getClientEntityByAccount(acc, emf);
+        } catch (Exception e) {
+            // db exception
+        }
         if (cln != null) {
             // changing user parameters
             if (hidden != null) {
                 // if user want to change something
-                String changable = accountService.verifyChangedParameter(hidden, new String[]{name, surname, login, password, repassword}, emf);
+                String changable = null;
+                try {
+                    changable = accountService.verifyChangedParameter(hidden, new String[]{name, surname, login, password, repassword}, emf);
+                } catch (Exception e) {
+                    // db exception
+                    accountService.generateErrorMessage();
+                }
                 if (changable != null) {
                     // changable contains value of parameter that can be changed
                     // hidden contains name of this parameter in db
@@ -83,7 +95,8 @@ public class AccountSettings extends HttpServlet {
                             }
                             request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
                         } catch (Exception e) {
-                            request.getSession().setAttribute("accountMessage", "Oops! Something went wrong! Try again later.");
+                            accountService.generateErrorMessage();
+                            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
                         }
                     } else {
                         // client param shoudl be changed
@@ -91,7 +104,8 @@ public class AccountSettings extends HttpServlet {
                             databaseService.updateClientParameter(hidden, changable, cln.getClientID(), emf, utx);
                             request.getSession().setAttribute("accountMessage", "Your " + hidden + " has been successfuly updated.");
                         } catch (Exception e) {
-                            request.getSession().setAttribute("accountMessage", "Oops! Something went wrong! Try again later.");
+                            accountService.generateErrorMessage();
+                            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
                         }
                     }
                 } else {
@@ -100,7 +114,13 @@ public class AccountSettings extends HttpServlet {
                 }
             }
             // reflesh client data
-            cln = databaseService.getClientEntityByAccount(acc, emf, utx);
+            try {
+                cln = databaseService.getClientEntityByAccount(acc, emf);
+            } catch (Exception e) {
+                // db exception
+                accountService.generateErrorMessage();
+                request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
+            }
             // fetching user paramters to webpage
             if (cln.getName().equals("_")) {
                 request.getSession().setAttribute("clientName", null);
@@ -113,6 +133,7 @@ public class AccountSettings extends HttpServlet {
                 request.getSession().setAttribute("clientSurname", cln.getSurname());
             }
         }
+
         request.getRequestDispatcher("/AccountSettingsPage.jsp").forward(request, response);
 
     }

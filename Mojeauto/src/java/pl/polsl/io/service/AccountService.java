@@ -1,6 +1,7 @@
 package pl.polsl.io.service;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.UserAccount;
 
@@ -21,7 +22,9 @@ public class AccountService {
         return this.accountMessage;
     }
 
-    public Boolean isCorrectLogInData(String login, String password, EntityManagerFactory emf, UserTransaction utx) {
+    public Boolean isCorrectLogInData(String login, String password, EntityManagerFactory emf, UserTransaction utx) throws Exception {
+
+        UserAccount acc;
         if (login == null || password == null) {
             accountMessage = "Login and password cannot be empty.";
             return false;
@@ -30,7 +33,11 @@ public class AccountService {
             accountMessage = "Login and password cannot be empty.";
             return false;
         }
-        UserAccount acc = (UserAccount) databaseService.getUserAccountEntity(login, password, emf);
+        try {
+            acc = (UserAccount) databaseService.getUserAccountEntity(login, password, emf);
+        } catch (NoResultException e) {
+            acc = null;
+        }
         if (acc == null) {
             accountMessage = "Incorrect login or password.";
             return false;
@@ -38,7 +45,8 @@ public class AccountService {
         return true;
     }
 
-    public Boolean isCorrectRegisterData(String login, String password, String repassword, EntityManagerFactory emf, UserTransaction utx) {
+    public Boolean isCorrectRegisterData(String login, String password, String repassword, EntityManagerFactory emf, UserTransaction utx) throws Exception {
+        UserAccount acc;
         if (login == null || password == null || repassword == null) {
             accountMessage = "One of required fields is empty.";
             return false;
@@ -51,7 +59,11 @@ public class AccountService {
             accountMessage = "Password and password retype field value does not match.";
             return false;
         }
-        UserAccount acc = (UserAccount) databaseService.getUserAccountEntity(login, "", emf);
+        try {
+            acc = (UserAccount) databaseService.getUserAccountEntity(login, "", emf);
+        } catch (NoResultException e) {
+            acc = null;
+        }
         if (acc != null) {
             accountMessage = "This login is already taken, choose different one.";
             return false;
@@ -60,7 +72,7 @@ public class AccountService {
         return true;
     }
 
-    public String verifyChangedParameter(String hidden, String[] params, EntityManagerFactory emf) {
+    public String verifyChangedParameter(String hidden, String[] params, EntityManagerFactory emf) throws Exception {
         // params: name, surname, login, password, repassword
         switch (hidden) {
             case "name":
@@ -106,4 +118,9 @@ public class AccountService {
                 return null;
         }
     }
+
+    public void generateErrorMessage() {
+        accountMessage = "Oops! Something went wrong! Try again later.";
+    }
+
 }

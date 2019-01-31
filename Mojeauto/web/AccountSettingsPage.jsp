@@ -88,7 +88,7 @@
     <center>
         <div class="menu-button-group" style="margin: 10px auto; width: 80%;">
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/AccountSettings';">Account Settings</button>
-            <button  onclick="window.location.href = '';">SubPage2</button>
+            <button  onclick="window.location.href = '<%=request.getContextPath()%>/ManageVehicles';">My Vehicles</button>
             <button  onclick="window.location.href = '';">SubPage3</button>
             <button  onclick="window.location.href = '';">SubPage4</button>
         </div>

@@ -39,11 +39,10 @@ public class TEMP_PopulateDB extends HttpServlet {
      */
     @Resource
     private UserTransaction utx;
-    
-    
+
     private DatabaseService databaseManager;
     private CookieService cookieManager;
-      
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -58,40 +57,46 @@ public class TEMP_PopulateDB extends HttpServlet {
 
         databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
         cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
-        
-        if (databaseManager.getUserAccountEntity("nowak", "123", emf) != null){
+
+        UserAccount acc1 = new UserAccount("nowak", "123");
+        UserAccount acc2 = new UserAccount("piotrowicz", "123");
+        UserAccount acc3 = new UserAccount("kapok", "123");
+        UserAccount acc4 = new UserAccount("leetgamer69", "123");
+
+        Client client1 = new Client("Adam", "Nowak", acc1);
+        Client client2 = new Client("Piotr", "Piotrowicz", acc2);
+        Client client3 = new Client("Zuzanna", "Kapok", acc3);
+        Client client4 = new Client("Jan", "Morszczyn", acc4);
+
+        SingleService s1 = new SingleService("Engine oil replacement", "Replacement of engine oil in a car. The oil is chosen based on brand and engine type.", 150.00);
+        SingleService s2 = new SingleService("Clutch fluid replacement", "Replacement of clutch fluid in a car.", 150.00);
+        SingleService s3 = new SingleService("Coolant fluid replacement", "Replacement of coolant fluid in a car.", 150.00);
+
+        ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1, s2, s3));
+        Package p1 = new Package("General fluid replacement", "Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00, list);
+
+        UserAccount acc = null;
+        try {
+            acc = databaseManager.getUserAccountEntity("nowak", "123", emf);
+        } catch (Exception e) {
+            // db exception
+        }
+
+        if (acc != null) {
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         } else {
-            UserAccount acc1 = new UserAccount("nowak", "123");
-            UserAccount acc2 = new UserAccount("piotrowicz", "123");
-            UserAccount acc3 = new UserAccount("kapok", "123");
-            UserAccount acc4 = new UserAccount("leetgamer69", "123");
-
-            databaseManager.addEntities(new Object[]{acc1,acc2,acc3,acc4}, emf, utx);
-            
-            Client client1 = new Client("Adam", "Nowak", acc1);
-            Client client2 = new Client("Piotr", "Piotrowicz", acc2);
-            Client client3 = new Client("Zuzanna", "Kapok", acc3);
-            Client client4 = new Client("Jan", "Morszczyn", acc4);
-                
-            databaseManager.addEntities(new Object[]{client1, client2, client3, client4}, emf, utx);
-            
-            SingleService s1 = new SingleService("Engine oil replacement","Replacement of engine oil in a car. The oil is chosen based on brand and engine type.",150.00);
-            SingleService s2 = new SingleService("Clutch fluid replacement","Replacement of clutch fluid in a car.",150.00);
-            SingleService s3 = new SingleService("Coolant fluid replacement","Replacement of coolant fluid in a car.",150.00);
-            
-            databaseManager.addEntities(new Object[]{s1, s2, s3}, emf, utx);
-            
-            ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1,s2,s3));
-            Package p1 = new Package("General fluid replacement","Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00,list);
-            
-            databaseManager.addEntities(new Object[]{p1}, emf, utx);
-            
+            try {
+                databaseManager.addEntities(new Object[]{acc1, acc2, acc3, acc4}, emf, utx);
+                databaseManager.addEntities(new Object[]{client1, client2, client3, client4}, emf, utx);
+                databaseManager.addEntities(new Object[]{s1, s2, s3}, emf, utx);
+                databaseManager.addEntities(new Object[]{p1}, emf, utx);
+            } catch (Exception e) {
+                // db exception
+            }
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         }
     }
-    
-    
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

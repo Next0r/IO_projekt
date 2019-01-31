@@ -2,6 +2,7 @@ package pl.polsl.io.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -20,7 +21,7 @@ import pl.polsl.io.service.DatabaseService;
  *
  * @author Michal
  */
-public class CreateAccount extends HttpServlet {
+public class ManageVehicles extends HttpServlet {
 
     /**
      * EntityManagerFactory injection field, used for creating EntityManager
@@ -54,32 +55,17 @@ public class CreateAccount extends HttpServlet {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         accountService = (AccountService) request.getSession().getAttribute("accountService");
-
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        String repassword = request.getParameter("repassword");
-
-        Boolean isCorrectRegisterData = false;
+        
         try {
-            isCorrectRegisterData = accountService.isCorrectRegisterData(login, password, repassword, emf, utx);
+            UserAccount acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+            Client cln = databaseService.getClientEntityByAccount(acc, emf);
+            ArrayList<String> clientCars = new ArrayList<String>(databaseService.getClientCarsByClient(cln, emf));
         } catch (Exception e) {
+            //db exception
             accountService.generateErrorMessage();
         }
-        if (isCorrectRegisterData) {
-            UserAccount acc = new UserAccount(login, password);
-            Client client = new Client("_", "_", acc);
-            try {
-                databaseService.addEntities(new Object[]{acc, client}, emf, utx);
-                request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
-            } catch (Exception e) {
-                // db exception
-            }
-            request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
-        } else {
-            // print register fail message
-            request.getSession().setAttribute("accountMessage", accountService.getAccountMessage());
-            request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
-        }
+
+        request.getRequestDispatcher("MyVehiclesPage.jsp").forward(request, response);
 
     }
 
