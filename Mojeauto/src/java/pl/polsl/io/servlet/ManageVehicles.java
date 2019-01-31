@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
+import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.AccountService;
 import pl.polsl.io.service.CookieService;
@@ -55,10 +56,30 @@ public class ManageVehicles extends HttpServlet {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         accountService = (AccountService) request.getSession().getAttribute("accountService");
-        
+
         UserAccount acc;
         Client cln;
-        ArrayList<String> clientCars = null; 
+
+        String hidden = request.getParameter("hidden");
+
+        // remove car
+        if (hidden != null) {
+            Integer removedCarId = Integer.valueOf(hidden);
+
+            try {
+                ClientCar car = databaseService.getClientCarByCarId(removedCarId, emf);
+                databaseService.deleteEntity(car, emf, utx);
+                request.getSession().setAttribute("accoutMessage", "Vehicle has been removed.");
+            } catch (Exception e) {
+                // db exception
+                accountService.generateErrorMessage();
+                request.getSession().setAttribute("accoutMessage", accountService.getAccountMessage());
+            }
+
+        }
+
+        // fetch car data
+        ArrayList<String> clientCars = null;
         try {
             acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
             cln = databaseService.getClientEntityByAccount(acc, emf);
@@ -66,8 +87,9 @@ public class ManageVehicles extends HttpServlet {
         } catch (Exception e) {
             //db exception
             accountService.generateErrorMessage();
+            request.getSession().setAttribute("accoutMessage", accountService.getAccountMessage());
         }
-        if(clientCars != null){
+        if (clientCars != null) {
             request.getSession().setAttribute("clientCars", clientCars);
         }
 

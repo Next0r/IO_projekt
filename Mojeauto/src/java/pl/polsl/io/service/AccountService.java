@@ -33,11 +33,7 @@ public class AccountService {
             accountMessage = "Login and password cannot be empty.";
             return false;
         }
-        try {
-            acc = (UserAccount) databaseService.getUserAccountEntity(login, password, emf);
-        } catch (NoResultException e) {
-            acc = null;
-        }
+        acc = (UserAccount) databaseService.getUserAccountEntity(login, password, emf);
         if (acc == null) {
             accountMessage = "Incorrect login or password.";
             return false;
@@ -59,11 +55,7 @@ public class AccountService {
             accountMessage = "Password and password retype field value does not match.";
             return false;
         }
-        try {
-            acc = (UserAccount) databaseService.getUserAccountEntity(login, "", emf);
-        } catch (NoResultException e) {
-            acc = null;
-        }
+        acc = (UserAccount) databaseService.getUserAccountEntity(login, "", emf);
         if (acc != null) {
             accountMessage = "This login is already taken, choose different one.";
             return false;

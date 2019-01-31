@@ -56,9 +56,10 @@ public class LogInOut extends HttpServlet {
         String hidden = request.getParameter("hidden");
         // handle log out
         if (hidden != null) {
-            request.getSession().setAttribute("currentUser", "");
-            request.getSession().setAttribute("clientName", "");
-            request.getSession().setAttribute("clientSurname", "");
+            request.getSession().setAttribute("currentUser", null);
+            request.getSession().setAttribute("clientName", null);
+            request.getSession().setAttribute("clientSurname", null);
+            request.getSession().setAttribute("clientCars", null);
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
             return;
         }

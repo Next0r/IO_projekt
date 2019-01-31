@@ -73,7 +73,9 @@ public class TEMP_PopulateDB extends HttpServlet {
         SingleService s2 = new SingleService("Clutch fluid replacement", "Replacement of clutch fluid in a car.", 150.00);
         SingleService s3 = new SingleService("Coolant fluid replacement", "Replacement of coolant fluid in a car.", 150.00);
 
-        ClientCar car1 = new ClientCar("TestCar", "Test01", "LN1234", 2019, client1);
+        ClientCar car1 = new ClientCar("TestCar1", "Test01", "LN1234", 2019, client1);
+        ClientCar car2 = new ClientCar("TestCar2", "Test02", "LN1235", 2019, client1);
+        ClientCar car3 = new ClientCar("TestCar3", "Test03", "LN1236", 2019, client1);
         
         ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1, s2, s3));
         Package p1 = new Package("General fluid replacement", "Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00, list);
@@ -94,7 +96,7 @@ public class TEMP_PopulateDB extends HttpServlet {
                 databaseService.addEntities(new Object[]{s1, s2, s3}, emf, utx);
                 databaseService.addEntities(new Object[]{p1}, emf, utx);
                 
-                databaseService.addEntities(new Object[]{car1}, emf, utx);
+                databaseService.addEntities(new Object[]{car1, car2, car3}, emf, utx);
                 
             } catch (Exception e) {
                 System.err.print(e.getMessage());

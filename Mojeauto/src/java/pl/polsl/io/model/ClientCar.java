@@ -53,4 +53,30 @@ public class ClientCar {
         this.owner = owner;
     }
 
+    public Integer getClientCarID() {
+        return clientCarID;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public Integer getProductionYear() {
+        return productionYear;
+    }
+
+    public Client getOwner() {
+        return owner;
+    }
+    
+    
+
 }

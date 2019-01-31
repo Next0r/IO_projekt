@@ -11,6 +11,10 @@
             .cell{
                 width: 20%;
             }
+            .text-box1{
+                width: 100%;
+                margin: 0;
+            }
         </style>
     </head>
     <body>
@@ -79,26 +83,46 @@
     </center>
     <%-- Page content --%>
     <hr>
+    <c:if test="${not empty accountMessage}">
+        <div class="text-box2" style="margin-left: 13px; width: 500px;">${accountMessage}</div>
+    </c:if>
     <c:choose>
         <c:when test="${not empty clientCars}">
             <div class="table">
+                <div class="row">
+                    <div class="cell">
+                        <div class="text-box2" style="margin: 0px; width: 100%;">Brand</div>
+                    </div>
+                    <div class="cell">
+                        <div class="text-box2" style="margin: 0px; width: 100%;">Model</div>
+                    </div>
+                    <div class="cell">
+                        <div class="text-box2" style="margin: 0px; width: 100%;">License Number</div>
+                    </div>
+                    <div class="cell">
+                        <div class="text-box2" style="margin: 0px; width: 100%;">Production Year</div>
+                    </div>
+                    <div class="cell">
+                    </div>
+                </div>
                 <c:forEach items="${clientCars}" var="car">
                     <div class="row">
                         <div class="cell">
-                            <div class="text-box1">car.brand</div>
+                            <div class="text-box1">${car.brand}</div>
                         </div>
                         <div class="cell">
-                            <div class="text-box1">car.model</div>
+                            <div class="text-box1">${car.model}</div>
                         </div>
                         <div class="cell">
-                            <div class="text-box1">car.licenseNumber</div>
+                            <div class="text-box1">${car.licenseNumber}</div>
                         </div>
                         <div class="cell">
-                            <div class="text-box1">car.productionYear</div>
+                            <div class="text-box1">${car.productionYear}</div>
                         </div>
                         <div class="cell">
-                            <form action="" method="post">
-                                <input type="submit" value="Remove"/>
+                            <form action="<%=request.getContextPath()%>/ManageVehicles" method="post">
+                                <input class="form-button1" type="submit" value="Remove"/>
+                                <input type="hidden" name="hidden" value="${car.clientCarID}"/>
                             </form>
                         </div>
                     </div>
@@ -106,7 +130,7 @@
             </div>
         </c:when>
         <c:otherwise>
-            <div class="text-box2">Thera are no cars related to your account.</div>
+            <div class="text-box2">There are no vehicles related to your account.</div>
         </c:otherwise>
     </c:choose>
 

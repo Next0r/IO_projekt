@@ -3,6 +3,7 @@ package pl.polsl.io.service;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
@@ -34,15 +35,19 @@ public class DatabaseService {
         EntityManager em;
         UserAccount acc;
         em = emf.createEntityManager();
-        if (password.isEmpty()) {
-            acc = (UserAccount) em.createQuery("select a from UserAccount a WHERE a.login LIKE :login")
-                    .setParameter("login", login)
-                    .getSingleResult();
-        } else {
-            acc = (UserAccount) em.createQuery("select a from UserAccount a WHERE a.login LIKE :login and a.password LIKE :password")
-                    .setParameter("login", login)
-                    .setParameter("password", password)
-                    .getSingleResult();
+        try {
+            if (password.isEmpty()) {
+                acc = (UserAccount) em.createQuery("select a from UserAccount a WHERE a.login LIKE :login")
+                        .setParameter("login", login)
+                        .getSingleResult();
+            } else {
+                acc = (UserAccount) em.createQuery("select a from UserAccount a WHERE a.login LIKE :login and a.password LIKE :password")
+                        .setParameter("login", login)
+                        .setParameter("password", password)
+                        .getSingleResult();
+            }
+        } catch (NoResultException e) {
+            acc = null;
         }
         em.close();
         return acc;
@@ -52,11 +57,15 @@ public class DatabaseService {
         Client cln = null;
         EntityManager em = null;
         if (acc != null) {
-            em = emf.createEntityManager();
-            cln = (Client) em.createQuery("select c from Client c WHERE c.userAccount = :acc")
-                    .setParameter("acc", acc)
-                    .getSingleResult();
-            em.close();
+            try {
+                em = emf.createEntityManager();
+                cln = (Client) em.createQuery("select c from Client c WHERE c.userAccount = :acc")
+                        .setParameter("acc", acc)
+                        .getSingleResult();
+                em.close();
+            } catch (NoResultException e) {
+                cln = null;
+            }
         }
         return cln;
     }
@@ -134,11 +143,45 @@ public class DatabaseService {
             return null;
         }
         EntityManager em = emf.createEntityManager();
-        clientCars = em.createQuery("select c from ClientCar c where c.clientCarID = :p1")
+        clientCars = em.createQuery("select c from ClientCar c where c.owner = :p1")
                 .setParameter("p1", cln)
                 .getResultList();
         em.close();
         return clientCars;
+    }
+
+    public ClientCar getClientCarByCarId(Integer carId, EntityManagerFactory emf) throws Exception {
+
+        if (carId == null) {
+            return null;
+        }
+        ClientCar car = null;
+        EntityManager em;
+        em = emf.createEntityManager();
+        try {
+            car = (ClientCar) em.createQuery("select c from ClientCar c where c.clientCarID = :p1")
+                    .setParameter("p1", carId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            car = null;
+        }
+        return car;
+    }
+
+    public void deleteEntity(Object entity, EntityManagerFactory emf, UserTransaction utx) throws Exception {
+        if (entity == null) {
+            return;
+        }
+        EntityManager em;
+        utx.begin();
+        em = emf.createEntityManager();
+        if (em.contains(entity)) {
+            em.remove(entity);
+        } else {
+            em.remove(em.merge(entity));
+        }
+        utx.commit();
+        em.close();
     }
 
 }
