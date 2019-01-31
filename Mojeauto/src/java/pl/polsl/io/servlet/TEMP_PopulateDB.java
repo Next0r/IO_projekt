@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
+import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.Package;
 import pl.polsl.io.model.UserAccount;
@@ -40,8 +41,8 @@ public class TEMP_PopulateDB extends HttpServlet {
     @Resource
     private UserTransaction utx;
 
-    private DatabaseService databaseManager;
-    private CookieService cookieManager;
+    private DatabaseService databaseService;
+    private CookieService cookieService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -55,8 +56,8 @@ public class TEMP_PopulateDB extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        databaseManager = (DatabaseService) request.getSession().getAttribute("databaseManager");
-        cookieManager = (CookieService) request.getSession().getAttribute("cookieManager");
+        databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
+        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
 
         UserAccount acc1 = new UserAccount("nowak", "123");
         UserAccount acc2 = new UserAccount("piotrowicz", "123");
@@ -72,12 +73,14 @@ public class TEMP_PopulateDB extends HttpServlet {
         SingleService s2 = new SingleService("Clutch fluid replacement", "Replacement of clutch fluid in a car.", 150.00);
         SingleService s3 = new SingleService("Coolant fluid replacement", "Replacement of coolant fluid in a car.", 150.00);
 
+        ClientCar car1 = new ClientCar("TestCar", "Test01", "LN1234", 2019, client1);
+        
         ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1, s2, s3));
         Package p1 = new Package("General fluid replacement", "Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00, list);
 
         UserAccount acc = null;
         try {
-            acc = databaseManager.getUserAccountEntity("nowak", "123", emf);
+            acc = databaseService.getUserAccountEntity("nowak", "123", emf);
         } catch (Exception e) {
             // db exception
         }
@@ -86,11 +89,15 @@ public class TEMP_PopulateDB extends HttpServlet {
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);
         } else {
             try {
-                databaseManager.addEntities(new Object[]{acc1, acc2, acc3, acc4}, emf, utx);
-                databaseManager.addEntities(new Object[]{client1, client2, client3, client4}, emf, utx);
-                databaseManager.addEntities(new Object[]{s1, s2, s3}, emf, utx);
-                databaseManager.addEntities(new Object[]{p1}, emf, utx);
+                databaseService.addEntities(new Object[]{acc1, acc2, acc3, acc4}, emf, utx);
+                databaseService.addEntities(new Object[]{client1, client2, client3, client4}, emf, utx);
+                databaseService.addEntities(new Object[]{s1, s2, s3}, emf, utx);
+                databaseService.addEntities(new Object[]{p1}, emf, utx);
+                
+                databaseService.addEntities(new Object[]{car1}, emf, utx);
+                
             } catch (Exception e) {
+                System.err.print(e.getMessage());
                 // db exception
             }
             request.getRequestDispatcher("Homepage.jsp").forward(request, response);

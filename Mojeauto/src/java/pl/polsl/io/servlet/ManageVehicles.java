@@ -56,13 +56,19 @@ public class ManageVehicles extends HttpServlet {
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         accountService = (AccountService) request.getSession().getAttribute("accountService");
         
+        UserAccount acc;
+        Client cln;
+        ArrayList<String> clientCars = null; 
         try {
-            UserAccount acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
-            Client cln = databaseService.getClientEntityByAccount(acc, emf);
-            ArrayList<String> clientCars = new ArrayList<String>(databaseService.getClientCarsByClient(cln, emf));
+            acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+            cln = databaseService.getClientEntityByAccount(acc, emf);
+            clientCars = new ArrayList<String>(databaseService.getClientCarsByClient(cln, emf));
         } catch (Exception e) {
             //db exception
             accountService.generateErrorMessage();
+        }
+        if(clientCars != null){
+            request.getSession().setAttribute("clientCars", clientCars);
         }
 
         request.getRequestDispatcher("MyVehiclesPage.jsp").forward(request, response);

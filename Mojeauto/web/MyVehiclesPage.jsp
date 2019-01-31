@@ -7,6 +7,11 @@
         <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>My account page</title>
+        <style>
+            .cell{
+                width: 20%;
+            }
+        </style>
     </head>
     <body>
         <%-- Code that should executed on page load --%>
@@ -74,6 +79,36 @@
     </center>
     <%-- Page content --%>
     <hr>
+    <c:choose>
+        <c:when test="${not empty clientCars}">
+            <div class="table">
+                <c:forEach items="${clientCars}" var="car">
+                    <div class="row">
+                        <div class="cell">
+                            <div class="text-box1">car.brand</div>
+                        </div>
+                        <div class="cell">
+                            <div class="text-box1">car.model</div>
+                        </div>
+                        <div class="cell">
+                            <div class="text-box1">car.licenseNumber</div>
+                        </div>
+                        <div class="cell">
+                            <div class="text-box1">car.productionYear</div>
+                        </div>
+                        <div class="cell">
+                            <form action="" method="post">
+                                <input type="submit" value="Remove"/>
+                            </form>
+                        </div>
+                    </div>
+                </c:forEach>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="text-box2">Thera are no cars related to your account.</div>
+        </c:otherwise>
+    </c:choose>
 
 </body>
 </html>
