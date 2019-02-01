@@ -23,7 +23,7 @@
         <%
             // reset login message to avoid displaying again in login page
             // session.setAttribute("resultMessage", "");
-%>
+        %>
 
         <%-- Header section --%>
     <center>
@@ -87,7 +87,9 @@
     <%-- Page content --%>
     <hr>
     <c:if test="${not empty resultMessage}">
-        <div class="text-box2" style="margin-left: 10px; margin-bottom: 6px;">${resultMessage}</div>
+        <div style="margin-left: 10px; width: 542px;">
+            <div class="text-box2" >${resultMessage}</div>
+        </div>
         <%
             session.setAttribute("resultMessage", "");
         %>
@@ -142,7 +144,7 @@
                     <div class="cell">
                         <form id="form6" action="<%=request.getContextPath()%>/PackageSales" method="post">              
                             <input type="hidden" name="carsSelected" value="carsSelected"/>
-                            <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy" onclick="window.open('PaymentRedirectPage.jsp')"/>
+                            <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy"/>
                         </form>
                     </div>
                 </div>

@@ -79,6 +79,7 @@ public class PackageSales extends HttpServlet {
             }
             // check if any cars selected
             if (selectedCars.isEmpty()) {
+                request.getSession().setAttribute("carSelection", true);
                 inputDataService.setResultMessageAttribute("Package have to be related to at least one vehicle.", request);
                 request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
                 return;
@@ -125,7 +126,7 @@ public class PackageSales extends HttpServlet {
                         return;
                     }
                 }
-                inputDataService.setResultMessageAttribute("Good job! With this package your vehicles are safe once again!", request);
+                inputDataService.setResultMessageAttribute("Good job! With this package your vehicle(s) are safe once again!", request);
             }
             request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
             return;
