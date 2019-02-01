@@ -72,7 +72,7 @@ public class ManageVehicles extends HttpServlet {
             Boolean isCorrectVehicleData;
 
             try {
-                isCorrectVehicleData = inputDataService.isCorrectVehicleData(brand, model, licenseNumber, emf);
+                isCorrectVehicleData = inputDataService.isCorrectVehicleData(brand, model, licenseNumber, emf, true);
             } catch (Exception e) {
                 //db exception
                 inputDataService.generateErrorResultMessage();

@@ -12,6 +12,10 @@
         <servlet-name>PackageSales</servlet-name>
         <servlet-class>pl.polsl.io.servlet.PackageSales</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoadRequest</servlet-name>
+        <servlet-class>pl.polsl.io.servlet.LoadRequest</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <url-pattern>/TEMP_PopulateDB</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>PackageSales</servlet-name>
         <url-pattern>/PackageSales</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoadRequest</servlet-name>
+        <url-pattern>/LoadRequest</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -9,6 +9,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
+import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
 
 /**
@@ -62,9 +63,13 @@ public class DatabaseService {
                 cln = (Client) em.createQuery("select c from Client c WHERE c.userAccount = :acc")
                         .setParameter("acc", acc)
                         .getSingleResult();
-                em.close();
             } catch (NoResultException e) {
                 cln = null;
+
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
             }
         }
         return cln;
@@ -165,6 +170,7 @@ public class DatabaseService {
         } catch (NoResultException e) {
             car = null;
         }
+        em.close();
         return car;
     }
 
@@ -183,6 +189,7 @@ public class DatabaseService {
         } catch (NoResultException e) {
             car = null;
         }
+        em.close();
         return car;
     }
 
@@ -208,7 +215,17 @@ public class DatabaseService {
                     .getSingleResult();
         } catch (NoResultException e) {
         }
+        em.close();
         return pckg;
+    }
+
+    public List getSingleServices(EntityManagerFactory emf) throws Exception {
+        EntityManager em;
+        em = emf.createEntityManager();
+        List<SingleService> sServices = em.createQuery("select s from SingleService s")
+                .getResultList();
+        em.close();
+        return sServices;
     }
 
     public void deleteEntity(Object entity, EntityManagerFactory emf, UserTransaction utx) throws Exception {

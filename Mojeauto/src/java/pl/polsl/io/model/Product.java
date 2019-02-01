@@ -26,7 +26,7 @@ public class Product {
     @Column(name = "PRODUCT_ID")
     private Integer productID;
 
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Temporal(TemporalType.DATE)
     @Column(name = "EXPIRATION_DATE")
     private Date expirationDate;

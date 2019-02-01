@@ -31,9 +31,9 @@ public class InputDataService {
     public String getResultMessage() {
         return this.resultMessage;
     }
-    
-    public Boolean isClientDataComplete(Client cln){
-        if(cln.getName().equals("_") || cln.getSurname().equals("_")){
+
+    public Boolean isClientDataComplete(Client cln) {
+        if (cln.getName().equals("_") || cln.getSurname().equals("_")) {
             resultMessage = "You still have to set up your personal details.";
             return false;
         }
@@ -64,27 +64,49 @@ public class InputDataService {
         return productionYear;
     }
 
-    public Boolean isCorrectVehicleData(String brand, String model, String licenseNumber, EntityManagerFactory emf) throws Exception{
-        if(brand == null || model == null || licenseNumber == null){
+    public Boolean isCorrectClientData(String name, String surname, String phoneNumber) {
+        if (name == null || surname == null || phoneNumber == null) {
             resultMessage = "One of required fields is empty.";
             return false;
         }
-        if(brand.isEmpty() || model.isEmpty() || licenseNumber.isEmpty()){
+        if (name.isEmpty() || surname.isEmpty() || phoneNumber.isEmpty()) {
             resultMessage = "One of required fields is empty.";
             return false;
         }
-        if(licenseNumber.split("\\s+").length > 1){
-            resultMessage = "Insert license number as single string of characters.";
+        if (phoneNumber.split("\\s+").length > 1) {
+            resultMessage = "Insert phone number as single string of characters.";
             return false;
         }
-        ClientCar car = (ClientCar) databaseService.getClientCarByLicenseNumber(licenseNumber, emf);
-        if(car != null){
-            resultMessage = "Vehicle with such license number already exists. If you consider this an error - try to contact us.";
+        if (phoneNumber.length() > 10 || phoneNumber.length() < 9) {
+            resultMessage = "Phone number is incorrect.";
             return false;
         }
         return true;
     }
-    
+
+    public Boolean isCorrectVehicleData(String brand, String model, String licenseNumber, EntityManagerFactory emf, Boolean existanceCheck) throws Exception {
+        if (brand == null || model == null || licenseNumber == null) {
+            resultMessage = "One of required fields is empty.";
+            return false;
+        }
+        if (brand.isEmpty() || model.isEmpty() || licenseNumber.isEmpty()) {
+            resultMessage = "One of required fields is empty.";
+            return false;
+        }
+        if (licenseNumber.split("\\s+").length > 1) {
+            resultMessage = "Insert license number as single string of characters.";
+            return false;
+        }
+        if (existanceCheck == true) {
+            ClientCar car = (ClientCar) databaseService.getClientCarByLicenseNumber(licenseNumber, emf);
+            if (car != null) {
+                resultMessage = "Vehicle with such license number already exists. If you consider this an error - try to contact us.";
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setResultMessageAttribute(String message, HttpServletRequest request) {
         if (message == null) {
             request.getSession().setAttribute("resultMessage", resultMessage);

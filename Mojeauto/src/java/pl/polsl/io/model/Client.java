@@ -33,11 +33,23 @@ public class Client {
     @Column(name = "SURNAME")
     private String surname;
     
+    @Basic(optional = true)
+    @Column(name = "PHONE_NUMBER")
+    private String phoneNumber;
+
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="ACCOUNT_ID")
     private UserAccount userAccount;
     
     public Client(){
+    }
+    
+        public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
     
     public Client(String name, String surname, UserAccount account){
