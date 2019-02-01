@@ -60,6 +60,7 @@ public class LogInOut extends HttpServlet {
             request.getSession().setAttribute("clientName", null);
             request.getSession().setAttribute("clientSurname", null);
             request.getSession().setAttribute("clientCars", null);
+            request.getSession().setAttribute("clientPhone", null);
             request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
             return;
         }
