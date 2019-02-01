@@ -3,6 +3,9 @@ package pl.polsl.io.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -13,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
+import pl.polsl.io.model.Payment;
+import pl.polsl.io.model.Product;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
@@ -56,34 +61,76 @@ public class PackageSales extends HttpServlet {
         cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
-        
         // check if user already selected cars
         String carsSelected = request.getParameter("carsSelected");
-        if(carsSelected != null){
+        if (carsSelected != null) {
             // user met all requirements
             // and selected cars
             // package id in selectedPackageId session attribute
             Integer selectedPackageId = (Integer) request.getSession().getAttribute("selectedPackageId");
             // cars displayed in clientCars session attribute
             ArrayList<ClientCar> clientCars = (ArrayList<ClientCar>) request.getSession().getAttribute("clientCars");
-            
-            //todo: find which cars has been selected
-            // by comparing checkbox values (named with license numbers)
-            
-            // create payment object
-            
-            // redirect to paymet site
-            
-            // create products /related to user acc/car ids/single payment/ of package type
-            
-            // send purchase finalised message           
-            
-            
+            // check box returns null if not checked
+            ArrayList<ClientCar> selectedCars = new ArrayList<>();
+            for (ClientCar car : clientCars) {
+                if (request.getParameter(car.getLicenseNumber()) != null) {
+                    selectedCars.add(car);
+                }
+            }
+            // check if any cars selected
+            if (selectedCars.isEmpty()) {
+                inputDataService.setResultMessageAttribute("Package have to be related to at least one vehicle.", request);
+                request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                return;
+            }
+            // get selected package
+            pl.polsl.io.model.Package pckg;
+            try {
+                pckg = databaseService.getPackageById(selectedPackageId, emf);
+            } catch (Exception e) {
+                //db exception
+                inputDataService.generateErrorResultMessage();
+                inputDataService.setResultMessageAttribute(null, request);
+                request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                return;
+            }
+            if (pckg != null) {
+                UserAccount acc;
+                Payment payment = new Payment(selectedCars.size() * pckg.getPrice(), "", false, new Date());
+                // fetch account add payment
+                try {
+                    acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+                    databaseService.addEntities(new Object[]{payment}, emf, utx);
+                } catch (Exception e) {
+                    // db exception
+                    inputDataService.generateErrorResultMessage();
+                    inputDataService.setResultMessageAttribute(null, request);
+                    request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                    return;
+                }
+                // add one year to expiration date
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.YEAR, 1);
+                // add products 
+                for (ClientCar car : selectedCars) {
+                    try {
+                        Product product = new Product(c.getTime(), acc, pckg, payment, car);
+                        databaseService.addEntities(new Object[]{product}, emf, utx);
+                    } catch (Exception e) {
+                        // db exception
+                        inputDataService.generateErrorResultMessage();
+                        inputDataService.setResultMessageAttribute(null, request);
+                        request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                        return;
+                    }
+                }
+                inputDataService.setResultMessageAttribute("Good job! With this package your vehicles are safe once again!", request);
+            }
             request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
             return;
         }
-        
-        
+
         // sell package if selected
         String selPackageId = request.getParameter("packageSelected");
         if (selPackageId != null) {
@@ -103,13 +150,13 @@ public class PackageSales extends HttpServlet {
                 return;
             }
             // check if client has set up his personal data
-            if(!inputDataService.isClientDataComplete(cln)){
+            if (!inputDataService.isClientDataComplete(cln)) {
                 inputDataService.setResultMessageAttribute(null, request);
                 request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
                 return;
             }
             // check if client has cars
-            if(clientCars.isEmpty()){
+            if (clientCars.isEmpty()) {
                 inputDataService.setResultMessageAttribute("There are no vehicles related to your account.", request);
                 request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
                 return;
@@ -118,7 +165,7 @@ public class PackageSales extends HttpServlet {
             request.getSession().setAttribute("carSelection", true);
             request.getSession().setAttribute("clientCars", clientCars);
             request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-            
+
             // selPackageId is allways package id (as generated number)
             Integer selectedPackageId = Integer.valueOf(selPackageId);
             request.getSession().setAttribute("selectedPackageId", selectedPackageId);

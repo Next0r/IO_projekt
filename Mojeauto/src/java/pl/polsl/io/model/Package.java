@@ -33,4 +33,8 @@ public class Package extends ProductType {
         this.singleServices = new ArrayList<>(services);
     }
 
+    public List<SingleService> getSingleServices() {
+        return singleServices;
+    }
+
 }

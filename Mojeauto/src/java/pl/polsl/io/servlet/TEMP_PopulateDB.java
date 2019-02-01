@@ -70,7 +70,7 @@ public class TEMP_PopulateDB extends HttpServlet {
         Client client4 = new Client("Jan", "Morszczyn", acc4);
 
         SingleService s1 = new SingleService("Engine oil replacement", "Replacement of engine oil in a car. The oil is chosen based on brand and engine type.", 150.00);
-        SingleService s2 = new SingleService("Clutch fluid replacement", "Replacement of clutch fluid in a car.", 150.00);
+        SingleService s2 = new SingleService("Power steering fluid replacement", "Replacement of power steering fluid in a car.", 150.00);
         SingleService s3 = new SingleService("Coolant fluid replacement", "Replacement of coolant fluid in a car.", 150.00);
 
         SingleService s4 = new SingleService("service4", "s4 description", 40.0);
@@ -86,7 +86,7 @@ public class TEMP_PopulateDB extends HttpServlet {
         ClientCar car3 = new ClientCar("TestCar3", "Test03", "LN1236", 2019, client1);
 
         ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1, s2, s3));
-        Package p1 = new Package("General fluid replacement", "Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00, list);
+        Package p1 = new Package("General fluid replacement", "Replacement of engine oil, power steering fluid and coolant fluid in a car.", 350.00, list);
         list = new ArrayList<>(Arrays.asList(s4, s5, s6));
         Package p2 = new Package("Package2", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim consectetur neque, id finibus nulla volutpat sit amet. Suspendisse vulputate, odio nec viverra interdum, odio tortor dignissim est, eu egestas nibh purus a dui. Sed metus quam, porttitor nec feugiat quis, efficitur nec enim. Nam euismod semper elit, ac cursus est ultrices non. Aliquam vitae justo blandit, consectetur massa quis, scelerisque lacus. Ut pellentesque quam ac risus egestas, eget eleifend magna bibendum. Sed a tincidunt leo. Nam vitae ligula bibendum, convallis mi eget, accumsan neque. Fusce malesuada pharetra nunc, in lacinia ipsum aliquam sit amet. ", 200.00, list);
         list = new ArrayList<>(Arrays.asList(s7, s8, s9));

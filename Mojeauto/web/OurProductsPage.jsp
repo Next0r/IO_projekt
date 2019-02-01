@@ -140,10 +140,10 @@
             <div class="table">
                 <div class="row">
                     <div class="cell">
-                            <form id="form6" action="<%=request.getContextPath()%>/PackageSales" method="post">
-                                <input type="hidden" name="carsSelected" value="carsSelected"/>
-                                <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy"/>
-                            </form>
+                        <form id="form6" action="<%=request.getContextPath()%>/PackageSales" method="post">              
+                            <input type="hidden" name="carsSelected" value="carsSelected"/>
+                            <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy" onclick="window.open('PaymentRedirectPage.jsp')"/>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -161,6 +161,12 @@
                             <div class="cell" style="width: 33%;">
                                 <div class="text-box2">${package.name}</div>
                                 <div class="text-box1" style="text-align: justify;">${package.description}</div>
+                                <div class="text-box2">Includes services:</div>
+                                <c:forEach items="${package.singleServices}" var="sService">
+                                    <div class="text-box1">
+                                        <div style="padding-left: 20px;">${sService.name}</div>
+                                    </div> 
+                                </c:forEach>
                                 <div class="text-box2">Price: ${package.price}$</div>
                                 <c:if test="${not empty currentUser}">
                                     <center>

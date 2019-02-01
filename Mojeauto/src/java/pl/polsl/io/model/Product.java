@@ -47,4 +47,64 @@ public class Product {
     @JoinColumn(name = "CAR_ID")
     private ClientCar clientCar;
 
+    public Product(){};
+    
+    public Product(Date expirationDate, UserAccount ownerAccount, ProductType productType, Payment payment, ClientCar clientCar){
+        this.expirationDate = expirationDate;
+        this.ownerAccount = ownerAccount;
+        this.productType = productType;
+        this.payment = payment;
+        this.clientCar = clientCar;
+    }
+    
+    public Integer getProductID() {
+        return productID;
+    }
+
+    public void setProductID(Integer productID) {
+        this.productID = productID;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public UserAccount getOwnerAccount() {
+        return ownerAccount;
+    }
+
+    public void setOwnerAccount(UserAccount ownerAccount) {
+        this.ownerAccount = ownerAccount;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
+    public ClientCar getClientCar() {
+        return clientCar;
+    }
+
+    public void setClientCar(ClientCar clientCar) {
+        this.clientCar = clientCar;
+    }
+    
+    
+
 }

@@ -27,7 +27,7 @@ public class Payment {
     @Column(name = "AMOUNT")
     private Double amount;
     
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Column(name = "METHOD")
     private String paymentMethod;
     
@@ -38,4 +38,14 @@ public class Payment {
     @Temporal(TemporalType.DATE)
     @Column(name = "PAYMENT_DATE")
     private Date paymentDate; 
+    
+    public Payment(){};
+    
+    public Payment(Double amount, String paymentMethod, Boolean finalized, Date paymentDate){
+        this.amount = amount;
+        this.paymentMethod = paymentMethod;
+        this.finalized = finalized;
+        this.paymentDate = paymentDate;
+    }
+    
 }

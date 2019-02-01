@@ -195,6 +195,22 @@ public class DatabaseService {
         return packages;
     }
 
+    public pl.polsl.io.model.Package getPackageById(Integer packageId, EntityManagerFactory emf) throws Exception {
+        if (packageId == null) {
+            return null;
+        }
+        EntityManager em;
+        em = emf.createEntityManager();
+        pl.polsl.io.model.Package pckg = null;
+        try {
+            pckg = (pl.polsl.io.model.Package) em.createQuery("select p from Package p where p.productTypeID = :p1")
+                    .setParameter("p1", packageId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+        }
+        return pckg;
+    }
+
     public void deleteEntity(Object entity, EntityManagerFactory emf, UserTransaction utx) throws Exception {
         if (entity == null) {
             return;
