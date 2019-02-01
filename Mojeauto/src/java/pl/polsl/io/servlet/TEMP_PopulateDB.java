@@ -73,12 +73,24 @@ public class TEMP_PopulateDB extends HttpServlet {
         SingleService s2 = new SingleService("Clutch fluid replacement", "Replacement of clutch fluid in a car.", 150.00);
         SingleService s3 = new SingleService("Coolant fluid replacement", "Replacement of coolant fluid in a car.", 150.00);
 
+        SingleService s4 = new SingleService("service4", "s4 description", 40.0);
+        SingleService s5 = new SingleService("service5", "s5 description", 50.0);
+        SingleService s6 = new SingleService("service6", "s6 description", 60.0);
+
+        SingleService s7 = new SingleService("service7", "s7 description", 70.0);
+        SingleService s8 = new SingleService("service8", "s8 description", 80.0);
+        SingleService s9 = new SingleService("service9", "s9 description", 90.0);
+
         ClientCar car1 = new ClientCar("TestCar1", "Test01", "LN1234", 2019, client1);
         ClientCar car2 = new ClientCar("TestCar2", "Test02", "LN1235", 2019, client1);
         ClientCar car3 = new ClientCar("TestCar3", "Test03", "LN1236", 2019, client1);
-        
+
         ArrayList<SingleService> list = new ArrayList<>(Arrays.asList(s1, s2, s3));
         Package p1 = new Package("General fluid replacement", "Replacement of engine oil, clutch fluid and coolant fluid in a car.", 350.00, list);
+        list = new ArrayList<>(Arrays.asList(s4, s5, s6));
+        Package p2 = new Package("Package2", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim consectetur neque, id finibus nulla volutpat sit amet. Suspendisse vulputate, odio nec viverra interdum, odio tortor dignissim est, eu egestas nibh purus a dui. Sed metus quam, porttitor nec feugiat quis, efficitur nec enim. Nam euismod semper elit, ac cursus est ultrices non. Aliquam vitae justo blandit, consectetur massa quis, scelerisque lacus. Ut pellentesque quam ac risus egestas, eget eleifend magna bibendum. Sed a tincidunt leo. Nam vitae ligula bibendum, convallis mi eget, accumsan neque. Fusce malesuada pharetra nunc, in lacinia ipsum aliquam sit amet. ", 200.00, list);
+        list = new ArrayList<>(Arrays.asList(s7, s8, s9));
+        Package p3 = new Package("Package3", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dignissim consectetur neque, id finibus nulla volutpat sit amet. Suspendisse vulputate, odio nec viverra interdum, odio tortor dignissim est, eu egestas nibh purus a dui. Sed metus quam, porttitor nec feugiat quis, efficitur nec enim. Nam euismod semper elit, ac cursus est ultrices non. Aliquam vitae justo blandit, consectetur massa quis, scelerisque lacus. Ut pellentesque quam ac risus egestas, eget eleifend magna bibendum. Sed a tincidunt leo. Nam vitae ligula bibendum, convallis mi eget, accumsan neque. Fusce malesuada pharetra nunc, in lacinia ipsum aliquam sit amet. ", 300.00, list);
 
         UserAccount acc = null;
         try {
@@ -93,11 +105,12 @@ public class TEMP_PopulateDB extends HttpServlet {
             try {
                 databaseService.addEntities(new Object[]{acc1, acc2, acc3, acc4}, emf, utx);
                 databaseService.addEntities(new Object[]{client1, client2, client3, client4}, emf, utx);
-                databaseService.addEntities(new Object[]{s1, s2, s3}, emf, utx);
-                databaseService.addEntities(new Object[]{p1}, emf, utx);
-                
+                databaseService.addEntities(new Object[]{s1, s2, s3, s4, s5, s6, s7, s8, s9}, emf, utx);
+
                 databaseService.addEntities(new Object[]{car1, car2, car3}, emf, utx);
-                
+
+                databaseService.addEntities(new Object[]{p1, p2, p3}, emf, utx);
+
             } catch (Exception e) {
                 System.err.print(e.getMessage());
                 // db exception

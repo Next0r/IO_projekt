@@ -167,8 +167,8 @@ public class DatabaseService {
         }
         return car;
     }
-    
-        public ClientCar getClientCarByLicenseNumber(String licenseNumber, EntityManagerFactory emf) throws Exception {
+
+    public ClientCar getClientCarByLicenseNumber(String licenseNumber, EntityManagerFactory emf) throws Exception {
 
         if (licenseNumber == null) {
             return null;
@@ -184,6 +184,15 @@ public class DatabaseService {
             car = null;
         }
         return car;
+    }
+
+    public List getPackages(EntityManagerFactory emf) throws Exception {
+        EntityManager em;
+        em = emf.createEntityManager();
+        List packages = em.createQuery("select p from Package p")
+                .getResultList();
+        em.close();
+        return packages;
     }
 
     public void deleteEntity(Object entity, EntityManagerFactory emf, UserTransaction utx) throws Exception {

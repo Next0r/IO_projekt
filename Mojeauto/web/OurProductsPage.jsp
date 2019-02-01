@@ -7,13 +7,26 @@
         <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>OurProducts</title>
+        <style>
+            .text-box1{
+                width: 100%;
+                height: inherit;
+                flex-wrap: wrap;
+            }
+            .text-box2{
+                width: 100%;
+            }
+            .cell{
+                width: 33%;
+            }
+        </style>
     </head>
     <body>
         <%-- Code that should executed on page load --%>
         <%
             // reset login message to avoid displaying again in login page
-            session.setAttribute("resultMessage", "");
-        %>
+            // session.setAttribute("resultMessage", "");
+%>
 
         <%-- Header section --%>
     <center>
@@ -49,7 +62,7 @@
     <center>
         <div class="menu-button-group">
             <button  onclick="window.location.href = 'Homepage.jsp';">Home</button>
-            <button  onclick="window.location.href = 'OurProductsPage.jsp';">Our products</button>
+            <button  onclick="window.location.href = '<%=request.getContextPath()%>/PackageSales';">Our products</button>
             <button  onclick="window.location.href = 'RequestAssistancePage.jsp';">Request assistance</button>
             <button  onclick="window.location.href = 'ContactPage.jsp';">Contact</button>
             <c:choose>
@@ -76,8 +89,32 @@
     --%>
     <%-- Page content --%>
     <hr>
-    Oferta
-    <hr>
+    <c:if test="${empty currentUser}">
+        <div style="width: 500px; margin-left: 10px;">
+            <div class="text-box2">You need to log in to purchase package.</div>
+        </div>
+    </c:if>
+    <c:if test="${not empty packages}">
+        <div class="table" style="width: 100%; min-width: 700px;">
+            <div class="row">
+                <c:forEach items="${packages}" var="package">
+                    <div class="cell">
+                        <div class="text-box2">${package.name}</div>
+                        <div class="text-box1" style="text-align: justify;">${package.description}</div>
+                        <div class="text-box2">Price: ${package.price}$</div>
+                        <c:if test="${not empty currentUser}">
+                            <center>
+                                <form action="<%=request.getContextPath()%>/PackageSales" method="post">
+                                    <input type="hidden" name="hidden" value="${package.productTypeID}"/>
+                                    <input class="form-button1" type="submit" value="Buy Package"/>
+                                </form>
+                            </center> 
+                        </c:if>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </c:if>
 
 </body>
 </html>

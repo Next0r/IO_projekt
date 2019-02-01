@@ -55,7 +55,7 @@
     <center>
         <div class="menu-button-group">
             <button  onclick="window.location.href = 'Homepage.jsp';">Home</button>
-            <button  onclick="window.location.href = 'OurProductsPage.jsp';">Our products</button>
+            <button  onclick="window.location.href = '<%=request.getContextPath()%>/PackageSales';">Our products</button>
             <button  onclick="window.location.href = 'RequestAssistancePage.jsp';">Request assistance</button>
             <button  onclick="window.location.href = 'ContactPage.jsp';">Contact</button>
             <c:choose>

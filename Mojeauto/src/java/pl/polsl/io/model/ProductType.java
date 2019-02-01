@@ -26,8 +26,9 @@ public abstract class ProductType {
     @Basic(optional = false)
     @Column(name = "NAME")
     private String name;
+    
     @Basic(optional = false)
-    @Column(name = "DESCRIPTION")
+    @Column(name = "DESCRIPTION", length = 1000)
     private String description;
     @Basic(optional = false)
     @Column(name = "PRICE")
@@ -42,4 +43,22 @@ public abstract class ProductType {
         this.description = description;
         this.price = price;
     }
+
+    public Integer getProductTypeID() {
+        return productTypeID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+    
+    
 }
