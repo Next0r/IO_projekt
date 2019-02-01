@@ -16,9 +16,6 @@
             .text-box2{
                 width: 100%;
             }
-            .cell{
-                width: 33%;
-            }
         </style>
     </head>
     <body>
@@ -89,32 +86,99 @@
     --%>
     <%-- Page content --%>
     <hr>
-    <c:if test="${empty currentUser}">
-        <div style="width: 500px; margin-left: 10px;">
-            <div class="text-box2">You need to log in to purchase package.</div>
-        </div>
+    <c:if test="${not empty resultMessage}">
+        <div class="text-box2" style="margin-left: 10px; margin-bottom: 6px;">${resultMessage}</div>
+        <%
+            session.setAttribute("resultMessage", "");
+        %>
     </c:if>
-    <c:if test="${not empty packages}">
-        <div class="table" style="width: 100%; min-width: 700px;">
-            <div class="row">
-                <c:forEach items="${packages}" var="package">
-                    <div class="cell">
-                        <div class="text-box2">${package.name}</div>
-                        <div class="text-box1" style="text-align: justify;">${package.description}</div>
-                        <div class="text-box2">Price: ${package.price}$</div>
-                        <c:if test="${not empty currentUser}">
-                            <center>
-                                <form action="<%=request.getContextPath()%>/PackageSales" method="post">
-                                    <input type="hidden" name="hidden" value="${package.productTypeID}"/>
-                                    <input class="form-button1" type="submit" value="Buy Package"/>
-                                </form>
-                            </center> 
-                        </c:if>
+    <c:choose>
+        <c:when test="${carSelection eq true}">
+            <%
+                session.setAttribute("carSelection", false);
+            %>
+            <div style="width: 542px; margin-left: 10px;">
+                <div class="text-box1">Select vehicles that should be associated with the package:</div>
+            </div>
+            <div class="table">
+                <div class="row">
+                    <div class="cell" style="width: 20%;">
+                        <div class="text-box2">Brand</div>
+                    </div>
+                    <div class="cell" style="width: 20%;">
+                        <div class="text-box2">Model</div>
+                    </div>
+                    <div class="cell" style="width: 20%;">
+                        <div class="text-box2">License Number</div>
+                    </div>
+                    <div class="cell" style="width: 20%;">
+                        <div class="text-box2">Production Year</div>
+                    </div>
+                    <div class="cell" style="width: 20%;">
+                    </div>
+                </div>
+                <c:forEach items="${clientCars}" var="car">
+                    <div class="row">
+                        <div class="cell" style="width: 20%;">
+                            <div class="text-box1">${car.brand}</div>
+                        </div>
+                        <div class="cell" style="width: 20%;">
+                            <div class="text-box1">${car.model}</div>
+                        </div>
+                        <div class="cell" style="width: 20%;">
+                            <div class="text-box1">${car.licenseNumber}</div>
+                        </div>
+                        <div class="cell" style="width: 20%;">
+                            <div class="text-box1">${car.productionYear}</div>
+                        </div>
+                        <div class="cell" style="width: 20%;">
+                            <input form="form6" type="checkbox" name="${car.licenseNumber}"/>
+                        </div>
                     </div>
                 </c:forEach>
             </div>
-        </div>
-    </c:if>
+            <div class="table">
+                <div class="row">
+                    <div class="cell">
+                            <form id="form6" action="<%=request.getContextPath()%>/PackageSales" method="post">
+                                <input type="hidden" name="carsSelected" value="carsSelected"/>
+                                <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy"/>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <c:if test="${empty currentUser}">
+                <div style="width: 500px; margin-left: 10px;">
+                    <div class="text-box2">You need to log in to purchase package.</div>
+                </div>
+            </c:if>
+            <c:if test="${not empty packages}">
+                <div class="table" style="width: 100%; min-width: 700px;">
+                    <div class="row">
+                        <c:forEach items="${packages}" var="package">
+                            <div class="cell" style="width: 33%;">
+                                <div class="text-box2">${package.name}</div>
+                                <div class="text-box1" style="text-align: justify;">${package.description}</div>
+                                <div class="text-box2">Price: ${package.price}$</div>
+                                <c:if test="${not empty currentUser}">
+                                    <center>
+                                        <form action="<%=request.getContextPath()%>/PackageSales" method="post">
+                                            <input type="hidden" name="packageSelected" value="${package.productTypeID}"/>
+                                            <input class="form-button1" type="submit" value="Buy Package"/>
+                                        </form>
+                                    </center> 
+                                </c:if>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </div>
+            </c:if>  
+        </c:otherwise>
+    </c:choose>    
+
+
 
 </body>
 </html>

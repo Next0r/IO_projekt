@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
+import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.UserAccount;
 
@@ -29,6 +30,14 @@ public class InputDataService {
 
     public String getResultMessage() {
         return this.resultMessage;
+    }
+    
+    public Boolean isClientDataComplete(Client cln){
+        if(cln.getName().equals("_") || cln.getSurname().equals("_")){
+            resultMessage = "You still have to set up your personal details.";
+            return false;
+        }
+        return true;
     }
 
     public String nullStringTrim(String string) {

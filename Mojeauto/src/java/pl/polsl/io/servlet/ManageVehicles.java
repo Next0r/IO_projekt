@@ -125,11 +125,11 @@ public class ManageVehicles extends HttpServlet {
         }
 
         // fetch car data
-        ArrayList<String> clientCars = null;
+        ArrayList<ClientCar> clientCars = null;
         try {
             acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
             cln = databaseService.getClientEntityByAccount(acc, emf);
-            clientCars = new ArrayList<String>(databaseService.getClientCarsByClient(cln, emf));
+            clientCars = new ArrayList<ClientCar>(databaseService.getClientCarsByClient(cln, emf));
         } catch (Exception e) {
             //db exception
             inputDataService.generateErrorResultMessage();
