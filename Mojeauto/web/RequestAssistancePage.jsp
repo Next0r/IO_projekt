@@ -98,41 +98,6 @@
             <div class="table" style="margin-left: -10px;">
                 <div class="row">
                     <div class="cell">
-                        <div class="table" style="width: 400px; margin-bottom: -10px;">
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box2" style="width: 100%;">Your personal information:</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table" style="width: 400px;">
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Name:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="name" value="${clientName}"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Surname:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="surname" value="${clientSurname}"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Phone Number:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="phone" value="${clientPhone}"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="cell">
                         <div class="table" style="width: 400px; margin-bottom: -10px; margin-top: -10px;">
                             <div class="row">
                                 <div class="cell">
@@ -145,30 +110,6 @@
                                     ${service.name}
                                 </div>
                             </c:forEach>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="cell">
-                        <div class="table" style="width: 400px; margin-bottom: -10px; margin-top: -10px;">
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box2" style="width: 100%;">Choose one of your cars:</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class ="table" style="width: 400px;">
-                            <c:forEach items="${clientCars}" var="car">
-                                <div class="row">
-                                    <div class="cell" style="width: 45%;">
-                                        <div class="text-box1">${car.licenseNumber}</div>
-                                    </div>
-                                    <div class="cell" style="width: 30%;">
-                                        <input form="form7" type="radio" name="selectedCar" value="${car.licenseNumber}"/>
-                                    </div>
-                                </div>
-                            </c:forEach>
-
                         </div>
                     </div>
                     <div class="cell">
@@ -184,6 +125,35 @@
                                 </div>
                             </div>
                         </div>   
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell">
+                        <div class="table" style="width: 400px; margin-bottom: -10px; margin-top: -10px;">
+                            <div class="row">
+                                <div class="cell">
+                                    <div class="text-box2" style="width: 100%;">Choose one of your cars:</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class ="table" style="width: 400px;">
+                            <c:forEach items="${clientCars}" var="car">
+                                <div class="row">
+                                    <div class="cell" style="width: 20%;">
+                                        <div class="text-box1">${car.brand}</div>
+                                    </div>
+                                    <div class="cell" style="width: 20%;">
+                                        <div class="text-box1">${car.model}</div>
+                                    </div>
+                                    <div class="cell" style="width: 20%;">
+                                        <div class="text-box1">${car.licenseNumber}</div>
+                                    </div>
+                                    <div class="cell" style="width: 30%;">
+                                        <input form="form7" type="radio" name="selectedCar" value="${car.licenseNumber}"/>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
