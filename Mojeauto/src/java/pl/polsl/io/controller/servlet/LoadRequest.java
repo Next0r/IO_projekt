@@ -83,15 +83,7 @@ public class LoadRequest extends HttpServlet {
             displayClientCars(request, cln);
             request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
         } else {
-            // Assistance request form was filled.
-            String name = inputDataService.nullStringTrim(request.getParameter("name"));
-            String surname = inputDataService.nullStringTrim(request.getParameter("surname"));
-            String phoneNumber = inputDataService.nullStringTrim(request.getParameter("phone"));
-            if (!inputDataService.isCorrectClientData(name, surname, phoneNumber)) {
-                inputDataService.setResultMessageAttribute(null, request);
-                request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                return;
-            }
+
             String licenseNumber = inputDataService.nullStringTrim(request.getParameter("selectedCar"));
             ClientCar car;
             try {
@@ -124,18 +116,6 @@ public class LoadRequest extends HttpServlet {
                 inputDataService.setResultMessageAttribute("Select at least one service or insert description.", request);
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
-            }
-            if (cln.getPhoneNumber() == null || cln.getPhoneNumber().isEmpty()) {
-                // if client exists but has not set phone number
-                try {
-                    databaseService.updateClientParameter("phoneNumber", phoneNumber, cln.getClientID(), emf, utx);
-                } catch (Exception e) {
-                    // db exception
-                    inputDataService.generateErrorResultMessage();
-                    inputDataService.setResultMessageAttribute(null, request);
-                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                    return;
-                }
             }
 
             ArrayList<Product> products = new ArrayList<>();
