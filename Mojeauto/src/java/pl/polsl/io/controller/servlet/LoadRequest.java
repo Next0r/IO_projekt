@@ -61,6 +61,8 @@ public class LoadRequest extends HttpServlet {
         UserAccount acc = null;
         Client cln = null;
         ArrayList<SingleService> sServices;
+        
+        String option = request.getParameter("submit");
 
         // try to load client data
         try {
@@ -71,10 +73,17 @@ public class LoadRequest extends HttpServlet {
             inputDataService.generateErrorResultMessage();
             inputDataService.setResultMessageAttribute(null, request);
         }
-
-        String option = request.getParameter("submit");
-        // check if user just submitted his request
-        if (option != null) {
+        
+        if (acc == null || cln == null) {
+            request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
+        } else if (option == null || !option.equals("submit")) {   
+            // Assistance request form was not filled.
+            displayClientData(request, acc, cln);
+            displayServices(request);
+            displayClientCars(request, cln);
+            request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
+        } else {
+            // Assistance request form was filled.
             String name = inputDataService.nullStringTrim(request.getParameter("name"));
             String surname = inputDataService.nullStringTrim(request.getParameter("surname"));
             String phoneNumber = inputDataService.nullStringTrim(request.getParameter("phone"));
@@ -83,25 +92,20 @@ public class LoadRequest extends HttpServlet {
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
-            String brand = inputDataService.nullStringTrim(request.getParameter("brand"));
-            String model = inputDataService.nullStringTrim(request.getParameter("model"));
-            String licenseNumber = inputDataService.nullStringTrim(request.getParameter("lNumber"));
-            String productionYear = inputDataService.nullStringTrim(request.getParameter("pYear"));
-            Boolean isCorrectVehicleData = false;
+            String licenseNumber = inputDataService.nullStringTrim(request.getParameter("selectedCar"));
+            ClientCar car;
             try {
-                isCorrectVehicleData = inputDataService.isCorrectVehicleData(brand, model, licenseNumber, emf, false);
+                car = databaseService.getClientCarByLicenseNumber(licenseNumber, emf);
             } catch (Exception e) {
                 // db exception
                 inputDataService.generateErrorResultMessage();
                 inputDataService.setResultMessageAttribute(null, request);
-            }
-            if (!isCorrectVehicleData) {
-                inputDataService.setResultMessageAttribute(null, request);
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
+            
             try {
-                sServices = new ArrayList<SingleService>(databaseService.getSingleServices(emf));
+                sServices = new ArrayList<>(databaseService.getSingleServices(emf));
             } catch (Exception e) {
                 inputDataService.generateErrorResultMessage();
                 inputDataService.setResultMessageAttribute(null, request);
@@ -121,68 +125,10 @@ public class LoadRequest extends HttpServlet {
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
-            // if there is no such client create new one
-            if (cln == null) {
-                cln = new Client(name, surname, null);
-                cln.setPhoneNumber(phoneNumber);
-                try {
-                    databaseService.addEntities(new Object[]{cln}, emf, utx);
-                } catch (Exception e) {
-                    // db exception
-                    inputDataService.generateErrorResultMessage();
-                    inputDataService.setResultMessageAttribute(null, request);
-                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                    return;
-                }
-            } else if (cln.getPhoneNumber() == null || cln.getPhoneNumber().isEmpty()) {
+            if (cln.getPhoneNumber() == null || cln.getPhoneNumber().isEmpty()) {
                 // if client exists but has not set phone number
                 try {
                     databaseService.updateClientParameter("phoneNumber", phoneNumber, cln.getClientID(), emf, utx);
-                } catch (Exception e) {
-                    // db exception
-                    inputDataService.generateErrorResultMessage();
-                    inputDataService.setResultMessageAttribute(null, request);
-                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                    return;
-                }
-
-            }
-            Boolean vehicleNotInDB = false;
-            try {
-                vehicleNotInDB = inputDataService.isCorrectVehicleData(brand, model, licenseNumber, emf, true);
-            } catch (Exception e) {
-                // db exception
-                inputDataService.generateErrorResultMessage();
-                inputDataService.setResultMessageAttribute(null, request);
-                request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                return;
-            }
-            ClientCar car;
-            // if such car alrady exists in db
-            if (!vehicleNotInDB) {
-                try {
-                    car = databaseService.getClientCarByLicenseNumber(licenseNumber, emf);
-                } catch (Exception e) {
-                    // db exception
-                    inputDataService.generateErrorResultMessage();
-                    inputDataService.setResultMessageAttribute(null, request);
-                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                    return;
-                }
-            } else {
-                // if car is not present in db add it
-                Integer productionYearInt;
-                try {
-                    productionYearInt = Integer.valueOf(productionYear);
-                } catch (NumberFormatException ex) {
-                    inputDataService.setResultMessageAttribute("Production Year needs to be a number!", request);
-                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                    return;
-                }
-      
-                car = new ClientCar(brand, model, licenseNumber.toUpperCase(), productionYearInt, cln);
-                try {
-                    databaseService.addEntities(new Object[]{car}, emf, utx);
                 } catch (Exception e) {
                     // db exception
                     inputDataService.generateErrorResultMessage();
@@ -196,7 +142,7 @@ public class LoadRequest extends HttpServlet {
             ArrayList<Payment> payments = new ArrayList<>();
             ArrayList<AssistanceRequest> assistanceRq = new ArrayList<>();
 
-            // if services were selected crete products based on them
+            // if services were selected create products based on them
             for (SingleService service : selectedServices) {
                 Payment payment = new Payment(service.getPrice(), "", false, new Date());
                 products.add(new Product(null, null, service, payment, car));
@@ -217,40 +163,58 @@ public class LoadRequest extends HttpServlet {
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
-
             inputDataService.setResultMessageAttribute("Thank you for your request. Our best specialists will contact with you soon.", request);
             request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-            return;
         }
-
-        // check if user is already logged in
-        if (acc != null && cln != null) {
-            // fetching user paramters to webpage
-            if (cln.getName().equals("_")) {
-                request.getSession().setAttribute("clientName", null);
-            } else {
-                request.getSession().setAttribute("clientName", cln.getName());
+    }
+    
+    void displayClientData(HttpServletRequest request, UserAccount acc, Client cln){
+                    if (acc != null && cln != null) {
+                // fetching user paramters to webpage
+                if (cln.getName().equals("_")) {
+                    request.getSession().setAttribute("clientName", null);
+                } else {
+                    request.getSession().setAttribute("clientName", cln.getName());
+                }
+                if (cln.getSurname().equals("_")) {
+                    request.getSession().setAttribute("clientSurname", null);
+                } else {
+                    request.getSession().setAttribute("clientSurname", cln.getSurname());
+                }
+                request.getSession().setAttribute("clientPhone", cln.getPhoneNumber());
             }
-            if (cln.getSurname().equals("_")) {
-                request.getSession().setAttribute("clientSurname", null);
-            } else {
-                request.getSession().setAttribute("clientSurname", cln.getSurname());
+    }
+    
+    void displayServices(HttpServletRequest request) {
+            try {
+                ArrayList<SingleService> sServices = new ArrayList<>(databaseService.getSingleServices(emf));
+                SingleService unncessarySingleService = null;
+                for (SingleService s : sServices) {
+                    if (s.getName().equals("Request assistance")) {
+                        unncessarySingleService = s;
+                    }
+                }
+                sServices.remove(unncessarySingleService);
+                request.getSession().setAttribute("services", sServices);
+            } catch (Exception e) {
+                //db exception
+                inputDataService.generateErrorResultMessage();
+                inputDataService.setResultMessageAttribute(null, request);
             }
-            request.getSession().setAttribute("clientPhone", cln.getPhoneNumber());
-        }
-
-        // fetch services to display
+    }
+    
+    void displayClientCars(HttpServletRequest request, Client cln){
+        ArrayList<ClientCar> clientCars;
         try {
-            sServices = new ArrayList<SingleService>(databaseService.getSingleServices(emf));
-            request.getSession().setAttribute("services", sServices);
+            clientCars = new ArrayList<>(databaseService.getClientCarsByClient(cln, emf));
         } catch (Exception e) {
-            //db exception
+            // db exception
             inputDataService.generateErrorResultMessage();
             inputDataService.setResultMessageAttribute(null, request);
-            request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
             return;
         }
-        request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
+        // request car selection display
+        request.getSession().setAttribute("clientCars", clientCars);
     }
 
     /**
@@ -280,5 +244,4 @@ public class LoadRequest extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
 }

@@ -74,9 +74,7 @@
         <div style="margin-left: 10px; width: 810px;">
             <div class="text-box2" >${resultMessage}</div>
         </div>
-        <%
-            session.setAttribute("resultMessage", "");
-        %>
+        <%     session.setAttribute("resultMessage", "");   %>
     </c:if>
     <c:choose>
         <c:when test="${empty currentUser}">
@@ -84,8 +82,12 @@
                 <div class="text-box2">You need to log in to request assistance.</div>
             </div>
         </c:when>
+        <c:when test="${not empty currentUser && empty clientCars}">
+            <div style="width: 500px; margin-left: 10px;">
+                <div class="text-box2">You need to have cars added to your account.</div>
+            </div>    
+        </c:when>
         <c:otherwise>
-            
             <div class="table" style="width: 810px; margin-bottom: -20px;">
                 <div class="row">
                     <div class="cell">
@@ -151,43 +153,22 @@
                         <div class="table" style="width: 400px; margin-bottom: -10px; margin-top: -10px;">
                             <div class="row">
                                 <div class="cell">
-                                    <div class="text-box2" style="width: 100%;">Data of your vehicle:</div>
+                                    <div class="text-box2" style="width: 100%;">Choose one of your cars:</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="table" style="width: 400px;">
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Brand:</div>
+                        <div class ="table" style="width: 400px;">
+                            <c:forEach items="${clientCars}" var="car">
+                                <div class="row">
+                                    <div class="cell" style="width: 45%;">
+                                        <div class="text-box1">${car.licenseNumber}</div>
+                                    </div>
+                                    <div class="cell" style="width: 30%;">
+                                        <input form="form7" type="radio" name="selectedCar" value="${car.licenseNumber}"/>
+                                    </div>
                                 </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="brand"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Model:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="model"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">License Number:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="lNumber"/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="cell">
-                                    <div class="text-box1">Production Year:</div>
-                                </div>
-                                <div class="cell">
-                                    <input form="form7" class="input-field1" type="text" name="pYear"/>
-                                </div>
-                            </div>
+                            </c:forEach>
+
                         </div>
                     </div>
                     <div class="cell">
