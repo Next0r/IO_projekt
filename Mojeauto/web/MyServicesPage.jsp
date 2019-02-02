@@ -25,11 +25,6 @@
         </style>
     </head>
     <body>
-        <%-- Code that should executed on page load --%>
-        <%
-
-        %>
-
         <%-- Header section --%>
     <center>
         <div class="header-container">
@@ -64,7 +59,7 @@
     <center>
         <div class="menu-button-group">
             <button  onclick="window.location.href = 'Homepage.jsp';">Home</button>
-            <button  onclick="window.location.href = '<%=request.getContextPath()%>/PackageSales';">Our products</button>
+            <button  onclick="window.location.href = '<%=request.getContextPath()%>/ProductSales';">Our products</button>
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/LoadRequest';">Request assistance</button>
             <button  onclick="window.location.href = 'ContactPage.jsp';">Contact</button>
             <c:choose>

@@ -8,6 +8,7 @@ import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.Product;
+import pl.polsl.io.model.ProductType;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
 
@@ -216,6 +217,24 @@ public class DatabaseService {
         em.close();
         return pckg;
     }
+    
+    public SingleService getSingleServiceById(Integer serviceId, EntityManagerFactory emf) throws Exception {
+        if (serviceId == null) {
+            return null;
+        }
+        EntityManager em;
+        em = emf.createEntityManager();
+        SingleService pckg = null;
+        try {
+            pckg = (SingleService) em.createQuery("select s from SingleService s where s.productTypeID = :p1")
+                    .setParameter("p1", serviceId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+        }
+        em.close();
+        return pckg;
+    }
+    
 
     public List getSingleServices(EntityManagerFactory emf) throws Exception {
         EntityManager em;

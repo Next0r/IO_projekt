@@ -62,6 +62,10 @@ public class TEMP_PopulateDB extends HttpServlet {
         Client client2 = new Client("Piotr", "Piotrowicz", acc2);
         Client client3 = new Client("Zuzanna", "Kapok", acc3);
         Client client4 = new Client("Jan", "Morszczyn", acc4);
+        
+        ClientCar car1 = new ClientCar("TestCar1", "Test01", "LN1234", 2019, client1);
+        ClientCar car2 = new ClientCar("TestCar2", "Test02", "LN1235", 2019, client1);
+        ClientCar car3 = new ClientCar("TestCar3", "Test03", "LN1236", 2019, client1);
 
 
         SingleService requestAssistance = new SingleService("Request assistance", "Allows for requesting assistance with issues concerning one's car. Each assistance request will be additionally priced based on the fixed issue.", 50.0);
@@ -79,12 +83,6 @@ public class TEMP_PopulateDB extends HttpServlet {
         SingleService instantHelp = new SingleService("Instant Help", "Allows for quick help on the road, including towing a broken car and an experts' assistance.", 200.0);
         list = new ArrayList<>(Arrays.asList(requestAssistance, replacementCar, s1, s2, s3, consultantHelp, instantHelp));
         Package premium = new Package("Premium Package", "The most exclusive package, includes the contents of the previous two packages, as well as a personal consultant's help concerning one's car and instant help on the road." , 750.00, list);
-        
-
-        ClientCar car1 = new ClientCar("TestCar1", "Test01", "LN1234", 2019, client1);
-        ClientCar car2 = new ClientCar("TestCar2", "Test02", "LN1235", 2019, client1);
-        ClientCar car3 = new ClientCar("TestCar3", "Test03", "LN1236", 2019, client1);
-
         
         
         UserAccount acc = null;

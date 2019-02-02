@@ -17,8 +17,8 @@
         <servlet-class>pl.polsl.io.controller.servlet.ManageVehicles</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>PackageSales</servlet-name>
-        <servlet-class>pl.polsl.io.controller.servlet.PackageSales</servlet-class>
+        <servlet-name>ProductSales</servlet-name>
+        <servlet-class>pl.polsl.io.controller.servlet.ProductSales</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoadRequest</servlet-name>
@@ -69,8 +69,8 @@
         <url-pattern>/ManageVehicles</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PackageSales</servlet-name>
-        <url-pattern>/PackageSales</url-pattern>
+        <servlet-name>ProductSales</servlet-name>
+        <url-pattern>/ProductSales</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LoadRequest</servlet-name>
