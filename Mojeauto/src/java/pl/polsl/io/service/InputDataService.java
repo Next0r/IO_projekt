@@ -2,7 +2,6 @@ package pl.polsl.io.service;
 
 import java.util.Calendar;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;

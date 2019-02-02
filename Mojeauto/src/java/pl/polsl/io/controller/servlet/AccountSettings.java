@@ -1,7 +1,6 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -13,7 +12,6 @@ import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.InputDataService;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 
 /**
@@ -36,7 +34,6 @@ public class AccountSettings extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -51,7 +48,6 @@ public class AccountSettings extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         // get data from settings form

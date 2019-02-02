@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <filter>
+        <filter-name>CreateServices</filter-name>
+        <filter-class>pl.polsl.io.controller.filter.CreateServices</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CreateServices</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <servlet-name>TEMP_PopulateDB</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.TEMP_PopulateDB</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.TEMP_PopulateDB</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ManageVehicles</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.ManageVehicles</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.ManageVehicles</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PackageSales</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.PackageSales</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.PackageSales</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoadRequest</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.LoadRequest</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.LoadRequest</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>FetchServices</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.FetchServices</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.FetchServices</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <url-pattern>/TEMP_PopulateDB</url-pattern>
     </servlet-mapping>
     <servlet>
-        <servlet-name>Init</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.Init</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>LogInOut</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.LogInOut</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.LogInOut</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CreateAccount</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.CreateAccount</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.CreateAccount</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AccountSettings</servlet-name>
-        <servlet-class>pl.polsl.io.servlet.AccountSettings</servlet-class>
+        <servlet-class>pl.polsl.io.controller.servlet.AccountSettings</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Homepage</servlet-name>
@@ -47,10 +51,6 @@
     <servlet-mapping>
         <servlet-name>Homepage</servlet-name>
         <url-pattern>/Homepage</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Init</servlet-name>
-        <url-pattern>/Init</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogInOut</servlet-name>

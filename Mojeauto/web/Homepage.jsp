@@ -15,12 +15,6 @@
         <title>Mojeauto</title>
     </head>
     <body>
-        <%-- Code that should executed on page load --%>
-        <%
-            // reset login message to avoid displaying again in login page
-            session.setAttribute("resultMessage", "");
-        %>
-
         <%-- Header section --%>
     <center>
         <div class="header-container">
@@ -69,22 +63,12 @@
         </div>
     </center>
     <%-- Sub navigation buttons --%>
-    <%--
-    <hr/>
-    <center>
-        <div class="menu-button-group" style="margin: 10px auto; width: 80%;">
-            <button  onclick="window.location.href = '';">SubPage1</button>
-            <button  onclick="window.location.href = '';">SubPage2</button>
-            <button  onclick="window.location.href = '';">SubPage3</button>
-            <button  onclick="window.location.href = '';">SubPage4</button>
-        </div>
-    </center>
-    --%>
     <%-- Page content --%>
     <hr>
     <p>What would you like to do?</p>
 
     <form action="<%=request.getContextPath()%>/TEMP_PopulateDB" method="POST">
+        BUTTON FOR TESTING - fills database with example entities (products, product types, services, accounts etc.) <br>
         <input type="submit" value="Populate database with test entities!" />
     </form>
     <hr>

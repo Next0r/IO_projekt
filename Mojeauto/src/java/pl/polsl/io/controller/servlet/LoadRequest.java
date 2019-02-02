@@ -1,7 +1,6 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -20,7 +19,6 @@ import pl.polsl.io.model.Payment;
 import pl.polsl.io.model.Product;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 import pl.polsl.io.service.InputDataService;
 
@@ -44,7 +42,6 @@ public class LoadRequest extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -59,7 +56,6 @@ public class LoadRequest extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         UserAccount acc = null;
@@ -175,7 +171,16 @@ public class LoadRequest extends HttpServlet {
                 }
             } else {
                 // if car is not present in db add it
-                car = new ClientCar(brand, model, licenseNumber.toUpperCase(), Integer.valueOf(productionYear), cln);
+                Integer productionYearInt;
+                try {
+                    productionYearInt = Integer.valueOf(productionYear);
+                } catch (NumberFormatException ex) {
+                    inputDataService.setResultMessageAttribute("Production Year needs to be a number!", request);
+                    request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
+                    return;
+                }
+      
+                car = new ClientCar(brand, model, licenseNumber.toUpperCase(), productionYearInt, cln);
                 try {
                     databaseService.addEntities(new Object[]{car}, emf, utx);
                 } catch (Exception e) {
@@ -248,7 +253,6 @@ public class LoadRequest extends HttpServlet {
         request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -276,15 +280,5 @@ public class LoadRequest extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

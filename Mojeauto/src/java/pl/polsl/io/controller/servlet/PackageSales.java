@@ -1,11 +1,10 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -19,7 +18,6 @@ import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.Payment;
 import pl.polsl.io.model.Product;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 import pl.polsl.io.service.InputDataService;
 
@@ -43,7 +41,6 @@ public class PackageSales extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -58,7 +55,6 @@ public class PackageSales extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         // check if user already selected cars
@@ -174,10 +170,12 @@ public class PackageSales extends HttpServlet {
         }
 
         // fetch package offer
-        ArrayList<Package> packageOffer;
+        ArrayList<pl.polsl.io.model.Package> packageOffer;
         try {
-            packageOffer = new ArrayList<Package>(databaseService.getPackages(emf));
+            packageOffer = new ArrayList<>(databaseService.getPackages(emf));
+            Collections.sort(packageOffer, (pl.polsl.io.model.Package lhs, pl.polsl.io.model.Package rhs) -> lhs.getPrice() > rhs.getPrice() ? 1 : -1);
             request.getSession().setAttribute("packages", packageOffer);
+      
         } catch (Exception e) {
             // db exception
         }
@@ -185,7 +183,6 @@ public class PackageSales extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -213,15 +210,5 @@ public class PackageSales extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

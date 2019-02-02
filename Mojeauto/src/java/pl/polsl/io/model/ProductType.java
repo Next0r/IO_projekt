@@ -58,7 +58,5 @@ public abstract class ProductType {
 
     public Double getPrice() {
         return price;
-    }
-    
-    
+    } 
 }

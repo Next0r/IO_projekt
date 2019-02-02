@@ -1,7 +1,6 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -15,7 +14,6 @@ import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.InputDataService;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 
 /**
@@ -38,7 +36,6 @@ public class ManageVehicles extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -54,7 +51,6 @@ public class ManageVehicles extends HttpServlet {
             throws ServletException, IOException {
 
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         UserAccount acc;

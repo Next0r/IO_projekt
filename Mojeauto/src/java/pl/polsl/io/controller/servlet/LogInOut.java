@@ -1,7 +1,6 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -10,17 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import pl.polsl.io.model.Client;
-import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.InputDataService;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 
 /**
  *
  * @author Michal
  */
-public class CreateAccount extends HttpServlet {
+public class LogInOut extends HttpServlet {
 
     /**
      * EntityManagerFactory injection field, used for creating EntityManager
@@ -36,7 +32,6 @@ public class CreateAccount extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -50,40 +45,42 @@ public class CreateAccount extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
+        String hidden = request.getParameter("hidden");
+        // handle log out
+        if (hidden != null) {
+            request.getSession().setAttribute("currentUser", null);
+            request.getSession().setAttribute("clientName", null);
+            request.getSession().setAttribute("clientSurname", null);
+            request.getSession().setAttribute("clientCars", null);
+            request.getSession().setAttribute("clientPhone", null);
+            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
+            return;
+        }
+
+        // handle log in
         String login = inputDataService.nullStringTrim(request.getParameter("login"));
         String password = inputDataService.nullStringTrim(request.getParameter("password"));
-        String repassword = inputDataService.nullStringTrim(request.getParameter("repassword"));
-
-        Boolean isCorrectRegisterData = false;
+        Boolean isCorrectUserData = false;
         try {
-            isCorrectRegisterData = inputDataService.isCorrectRegisterData(login, password, repassword, emf, utx);
+            isCorrectUserData = inputDataService.isCorrectLogInData(login, password, emf, utx);
         } catch (Exception e) {
             inputDataService.generateErrorResultMessage();
         }
-        if (isCorrectRegisterData) {
-            UserAccount acc = new UserAccount(login, password);
-            Client client = new Client("_", "_", acc);
-            try {
-                databaseService.addEntities(new Object[]{acc, client}, emf, utx);
-                inputDataService.setResultMessageAttribute(null, request);
-            } catch (Exception e) {
-                // db exception
-            }
-            request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
+
+        if (isCorrectUserData) {
+            request.getSession().setAttribute("currentUser", login);
+            request.getRequestDispatcher("/Homepage.jsp").forward(request, response);
         } else {
-            // print register fail message
+            // send account manager fail message
             inputDataService.setResultMessageAttribute(null, request);
             request.getRequestDispatcher("/LoginRegisterPage.jsp").forward(request, response);
         }
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -111,15 +108,5 @@ public class CreateAccount extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

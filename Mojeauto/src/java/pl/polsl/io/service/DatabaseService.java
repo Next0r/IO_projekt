@@ -4,8 +4,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
@@ -83,7 +81,6 @@ public class DatabaseService {
                 Boolean valueIsNumber;
                 utx.begin();
                 em = emf.createEntityManager();
-                //System.out.println("update Client set " + paramName + " = " + paramValue + " where clientID = " + clientId);
                 try {
                     Integer.valueOf(paramValue);
                     valueIsNumber = true;

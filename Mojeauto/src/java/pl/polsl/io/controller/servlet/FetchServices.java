@@ -1,7 +1,6 @@
-package pl.polsl.io.servlet;
+package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,7 +16,6 @@ import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.Product;
 import pl.polsl.io.model.UserAccount;
-import pl.polsl.io.service.CookieService;
 import pl.polsl.io.service.DatabaseService;
 import pl.polsl.io.service.InputDataService;
 
@@ -41,7 +39,6 @@ public class FetchServices extends HttpServlet {
     private UserTransaction utx;
 
     private DatabaseService databaseService;
-    private CookieService cookieService;
     private InputDataService inputDataService;
 
     /**
@@ -57,7 +54,6 @@ public class FetchServices extends HttpServlet {
             throws ServletException, IOException {
 
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
-        cookieService = (CookieService) request.getSession().getAttribute("cookieService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
 
         UserAccount acc;

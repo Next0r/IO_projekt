@@ -13,16 +13,8 @@
         <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>LoginPage</title>
-        <style>
-            
-        </style>
     </head>
     <body>
-        <%-- Code that should executed on page load --%>
-        <%
-            // reset login message to avoid displaying again in login page
-            // session.setAttribute("resultMessage", "");
-        %>
 
         <%-- Header section --%>
     <center>
@@ -71,23 +63,13 @@
             </c:choose>
         </div>
     </center>
-    <%-- Sub navigation buttons --%>
-    <%--
-    <hr/>
-    <center>
-        <div class="menu-button-group" style="margin: 10px auto; width: 80%;">
-            <button  onclick="window.location.href = '';">SubPage1</button>
-            <button  onclick="window.location.href = '';">SubPage2</button>
-            <button  onclick="window.location.href = '';">SubPage3</button>
-            <button  onclick="window.location.href = '';">SubPage4</button>
-        </div>
-    </center>
-    --%>
+
     <%-- Page content --%>
     <hr>
     <c:if test="${not empty resultMessage}">
         <div class="text-box2" style="margin-left: 13px;">${resultMessage}</div>
         <%
+            session.setAttribute("resultMessage", "");
             request.setAttribute("resultMessage", "");
         %>
     </c:if>
