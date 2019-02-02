@@ -68,7 +68,7 @@
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/AccountSettings';">Account Settings</button>
             <button  onclick="window.location.href = '<%=request.getContextPath()%>/ManageVehicles';">My Vehicles</button>
             <button  onclick="window.location.href = 'AddVehiclePage.jsp';">Add Vehicle</button>
-            <button  onclick="window.location.href = '';">SubPage4</button>
+            <button  onclick="window.location.href = '<%=request.getContextPath()%>/FetchServices';">My Services</button>
         </div>
     </center>
     <%-- Page content --%>

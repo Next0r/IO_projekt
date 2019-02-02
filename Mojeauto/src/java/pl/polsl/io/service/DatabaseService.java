@@ -9,6 +9,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
+import pl.polsl.io.model.Product;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
 
@@ -228,6 +229,16 @@ public class DatabaseService {
         return sServices;
     }
 
+    public List getProductsByClientCar(ClientCar car, EntityManagerFactory emf) throws Exception{
+        EntityManager em;
+        em = emf.createEntityManager();
+        List<Product> products = em.createQuery("select p from Product p where p.clientCar = :p1")
+                .setParameter("p1", car)
+                .getResultList();
+        em.close();
+        return products;
+    }
+    
     public void deleteEntity(Object entity, EntityManagerFactory emf, UserTransaction utx) throws Exception {
         if (entity == null) {
             return;

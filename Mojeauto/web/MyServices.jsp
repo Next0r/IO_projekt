@@ -6,14 +6,21 @@
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>My vehicles page</title>
+        <title>My services page</title>
         <style>
             .cell{
-                width: 20%;
+                width: auto;
+            }
+            .text-box2{
+                width: 100%;
+                margin: 0;
+                
             }
             .text-box1{
                 width: 100%;
                 margin: 0;
+                flex-wrap: wrap;
+                height: auto;
             }
         </style>
     </head>
@@ -28,7 +35,7 @@
         <div class="header-container">
             <%-- Banner --%>
             <div class ="header-banner">
-                <h1>My vehicles page</h1>
+                <h1>My services page</h1>
             </div>
 
             <%-- Account status --%> 
@@ -88,53 +95,54 @@
             session.setAttribute("resultMessage", "");
         %>
     </c:if>
-    <c:choose>
-        <c:when test="${not empty clientCars}">
-            <div class="table">
+    <c:if test="${not empty clientProducts}">
+        <div class="table">
+            <div class="row">
+                <div class="cell">
+                    <div class="text-box2">Expiration Date</div>
+                </div>
+                <div class="cell">
+                    <div class="text-box2">Product Type</div>
+                </div>
+                <div class="cell">
+                    <div class="text-box2">Product Name</div>
+                </div>
+                <div class="cell">
+                    <div class="text-box2">Related Car</div>
+                </div>
+            </div>
+            <c:forEach items="${clientProducts}" var="product">
                 <div class="row">
                     <div class="cell">
-                        <div class="text-box2" style="margin: 0px; width: 100%;">Brand</div>
+                        <c:choose>
+                            <c:when test="${ not empty product.expirationDate}">
+                                <div class="text-box1">${product.expirationDate}</div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text-box1">None</div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="cell">
-                        <div class="text-box2" style="margin: 0px; width: 100%;">Model</div>
+                        <c:choose>
+                            <c:when test="${ not empty product.expirationDate}">
+                                <div class="text-box1">Package</div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="text-box1">Single Service</div>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                     <div class="cell">
-                        <div class="text-box2" style="margin: 0px; width: 100%;">License Number</div>
+                        <div class="text-box1">${product.productType.name}</div>
                     </div>
                     <div class="cell">
-                        <div class="text-box2" style="margin: 0px; width: 100%;">Production Year</div>
-                    </div>
-                    <div class="cell">
+                        <div class="text-box1">${product.clientCar.licenseNumber}</div>
                     </div>
                 </div>
-                <c:forEach items="${clientCars}" var="car">
-                    <div class="row">
-                        <div class="cell">
-                            <div class="text-box1">${car.brand}</div>
-                        </div>
-                        <div class="cell">
-                            <div class="text-box1">${car.model}</div>
-                        </div>
-                        <div class="cell">
-                            <div class="text-box1">${car.licenseNumber}</div>
-                        </div>
-                        <div class="cell">
-                            <div class="text-box1">${car.productionYear}</div>
-                        </div>
-                        <div class="cell">
-                            <form action="<%=request.getContextPath()%>/ManageVehicles" method="post">
-                                <input class="form-button1" type="submit" value="Remove"/>
-                                <input type="hidden" name="hidden" value="${car.clientCarID}"/>
-                            </form>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="text-box2" style="margin-left: 10px; margin-top: 6px; width: 500px;">There are no vehicles related to your account.</div>
-        </c:otherwise>
-    </c:choose>
+            </c:forEach>
+        </div>
+    </c:if>
 
 </body>
 </html>

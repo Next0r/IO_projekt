@@ -16,6 +16,10 @@
         <servlet-name>LoadRequest</servlet-name>
         <servlet-class>pl.polsl.io.servlet.LoadRequest</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FetchServices</servlet-name>
+        <servlet-class>pl.polsl.io.servlet.FetchServices</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>TEMP_PopulateDB</servlet-name>
         <url-pattern>/TEMP_PopulateDB</url-pattern>
@@ -71,6 +75,10 @@
     <servlet-mapping>
         <servlet-name>LoadRequest</servlet-name>
         <url-pattern>/LoadRequest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FetchServices</servlet-name>
+        <url-pattern>/FetchServices</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
