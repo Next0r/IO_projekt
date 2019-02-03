@@ -205,11 +205,11 @@ public class LoadRequest extends HttpServlet {
         }
                 
         for (Product p : availableProducts) {
-            if (!p.getProductType().getName().contains("Request assistance") && !p.getProductType().getName().contains("Package")) {
-                return null;
+            if (p.getProductType().getName().contains("Request assistance") || p.getProductType().getName().contains("Package")) {
+                return neededProducts;
             }
         }
-        return neededProducts;
+        return null;
     }
     
     private ArrayList<SingleService> getSelectedServices(HttpServletRequest request){
