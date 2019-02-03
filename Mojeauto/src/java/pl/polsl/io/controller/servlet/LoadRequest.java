@@ -115,17 +115,15 @@ public class LoadRequest extends HttpServlet {
             }
             
             //Create assistance request.
-            AssistanceRequest assistanceRequest = new AssistanceRequest(car, neededProducts, description);
-
             try {
-                databaseService.addEntities(new Object[]{assistanceRequest}, emf, utx);
+                addAssistanceRequest(car,neededProducts,description);
             } catch (Exception e) {
-                // db exception
                 inputDataService.generateErrorResultMessage();
                 inputDataService.setResultMessageAttribute(null, request);
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
+
             inputDataService.setResultMessageAttribute("Thank you for your request. Our best specialists will contact with you soon.", request);
             request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
         }
@@ -180,21 +178,6 @@ public class LoadRequest extends HttpServlet {
         request.getSession().setAttribute("clientCars", clientCars);
     }
     
-    private boolean canClientRequestAssistance( List<Product> availableProducts, ArrayList<SingleService> selectedServices) {
-        for (ProductType s : selectedServices) {
-            boolean productExists = false;
-            for (Product p : availableProducts) {
-                if (p.getProductType() == s){
-                    productExists = true;
-                }
-            }
-            if (!productExists){
-                return false;
-            }
-        }
-        return true;
-    }
-    
     private List<Product> getNeededProducts(List<Product> availableProducts, ArrayList<SingleService> selectedServices) {
         
         List<Product> neededProducts = new ArrayList<>();
@@ -246,6 +229,11 @@ public class LoadRequest extends HttpServlet {
                 }
             }
         return selectedServices;
+    }
+    
+    private void addAssistanceRequest(ClientCar car, List<Product> neededProducts, String description) throws Exception {
+        AssistanceRequest assistanceRequest = new AssistanceRequest(car, neededProducts, description);
+        databaseService.addEntities(new Object[]{assistanceRequest}, emf, utx);
     }
    
 

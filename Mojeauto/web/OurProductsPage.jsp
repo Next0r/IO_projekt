@@ -104,7 +104,7 @@
                                     <center>
                                         <form action="<%=request.getContextPath()%>/ProductSales" method="post">
                                             <input type="hidden" name="stage" value="packageSelected"/>
-                                            <input type="hidden" name="packageSelected" value="${package.productTypeID}"/>
+                                            <input type="hidden" name="productSelected" value="${package.productTypeID}"/>
                                             <input class="form-button1" type="submit" value="Buy Package"/>
                                         </form>
                                     </center> 
@@ -147,7 +147,7 @@
                                 <c:if test="${not empty currentUser}">
                                     <form action="<%=request.getContextPath()%>/ProductSales" method="post">
                                         <input type="hidden" name="stage" value="serviceSelected"/>
-                                        <input type="hidden" name="serviceSelected" value="${service.productTypeID}"/>
+                                        <input type="hidden" name="productSelected" value="${service.productTypeID}"/>
                                         <input class="form-button1" type="submit" value="Buy Service"/>
                                     </form>
                                 </c:if>
@@ -205,7 +205,6 @@
                     <div class="cell">
                         <form id="form6" action="<%=request.getContextPath()%>/ProductSales" method="post">    
                             <input type="hidden" name="stage" value="carsSelected"/>
-                            <input type="hidden" name="carsSelected" value="carsSelected"/>
                             <input class="form-button1" style="margin-left: 173px; width: 200px;" type="submit" value="Buy"/>
                         </form>
                     </div>

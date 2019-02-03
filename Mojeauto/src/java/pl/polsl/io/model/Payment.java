@@ -4,9 +4,12 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -39,13 +42,18 @@ public class Payment {
     @Column(name = "PAYMENT_DATE")
     private Date paymentDate; 
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CLIENT_ID")
+    private Client client;
+    
     public Payment(){};
     
-    public Payment(Double amount, String paymentMethod, Boolean finalized, Date paymentDate){
+    public Payment(Double amount, String paymentMethod, Boolean finalized, Date paymentDate, Client client){
         this.amount = amount;
         this.paymentMethod = paymentMethod;
         this.finalized = finalized;
         this.paymentDate = paymentDate;
+        this.client = client;
     }
     
 }

@@ -17,6 +17,7 @@ import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
 import pl.polsl.io.model.Payment;
 import pl.polsl.io.model.Product;
+import pl.polsl.io.model.ProductType;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.DatabaseService;
@@ -57,158 +58,86 @@ public class ProductSales extends HttpServlet {
             throws ServletException, IOException {
         databaseService = (DatabaseService) request.getSession().getAttribute("databaseService");
         inputDataService = (InputDataService) request.getSession().getAttribute("inputDataService");
-        
+
         String stage = request.getParameter("stage");
         if (stage == null) {
             displayOffer(request);
-            request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);  
-        } else if (stage.equals("packageSelected")) {
-            // A package was selected for buying.
-            String selPackageId = request.getParameter("packageSelected");
-            if (selPackageId != null && isClientDataCorrect(request)){
-                displayCarSelection(request);
-                // selPackageId is allways product id (as generated number)
-                Integer selectedServiceId = Integer.valueOf(selPackageId);
-                request.getSession().setAttribute("selectedProductId", selectedServiceId);  
-            }
             request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-        } else if (stage.equals("serviceSelected")) {
-            // A service was selected for buying.
-            String selServiceId = request.getParameter("serviceSelected");
-            if (selServiceId != null && isClientDataCorrect(request)) {
-                displayCarSelection(request);
-                // selServiceId is allways product id (as generated number)
-                Integer selectedServiceId = Integer.valueOf(selServiceId);
-                request.getSession().setAttribute("selectedProductId", selectedServiceId);  
-            }
+        } else if (stage.equals("packageSelected") || stage.equals("serviceSelected")) {
+            handleProductSelected(request);
             request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
         } else if (stage.equals("carsSelected")) {
-            // check if user already selected cars
-            String carsSelected = request.getParameter("carsSelected");
-            if (carsSelected != null) {
-                // user met all requirements and selected cars
-                // product id in selectedProductId session attribute
-                Integer selectedProductId = (Integer) request.getSession().getAttribute("selectedProductId");
-                // cars displayed in clientCars session attribute
-                ArrayList<ClientCar> clientCars = (ArrayList<ClientCar>) request.getSession().getAttribute("clientCars");
-                // check box returns null if not checked
-                ArrayList<ClientCar> selectedCars = new ArrayList<>();
-                for (ClientCar car : clientCars) {
-                    if (request.getParameter(car.getLicenseNumber()) != null) {
-                        selectedCars.add(car);
-                    }
-                }
-                // check if any cars selected
-                if (selectedCars.isEmpty()) {
-                    request.getSession().setAttribute("carSelection", true);
-                    inputDataService.setResultMessageAttribute("Products have to be related to at least one vehicle.", request);
-                    request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                    return;
-                }
-                // get selected package or service
-                pl.polsl.io.model.Package pckg;
-                SingleService srvc;
-                try {
-                    pckg = databaseService.getPackageById(selectedProductId, emf);
-                    srvc = databaseService.getSingleServiceById(selectedProductId, emf);
-                } catch (Exception e) {
-                    //db exception
-                    inputDataService.generateErrorResultMessage();
-                    inputDataService.setResultMessageAttribute(null, request);
-                    request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                    return;
-                }
-                if (pckg != null) {
-                    UserAccount acc;
-                    Payment payment = new Payment(selectedCars.size() * pckg.getPrice(), "", true, new Date());
-                    // fetch account add payment
-                    try {
-                        acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
-                        databaseService.addEntities(new Object[]{payment}, emf, utx);
-                    } catch (Exception e) {
-                        // db exception
-                        inputDataService.generateErrorResultMessage();
-                        inputDataService.setResultMessageAttribute(null, request);
-                        request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                        return;
-                    }
-                    // add one year to expiration date
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(new Date());
-                    c.add(Calendar.YEAR, 1);
-                    // add products 
-                    for (ClientCar car : selectedCars) {
-                        try {
-                            Product product = new Product(c.getTime(), acc, pckg, payment, car);
-                            databaseService.addEntities(new Object[]{product}, emf, utx);
-                        } catch (Exception e) {
-                            // db exception
-                            inputDataService.generateErrorResultMessage();
-                            inputDataService.setResultMessageAttribute(null, request);
-                            request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                            return;
-                        }
-                    }
-                    inputDataService.setResultMessageAttribute("Good job! With this package your vehicle(s) are safe once again!", request);
-                }
-                if (srvc != null) {
-                    UserAccount acc;
-                    Payment payment = new Payment(selectedCars.size() * srvc.getPrice(), "", true, new Date());
-                    // fetch account add payment
-                    try {
-                        acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
-                        databaseService.addEntities(new Object[]{payment}, emf, utx);
-                    } catch (Exception e) {
-                        // db exception
-                        inputDataService.generateErrorResultMessage();
-                        inputDataService.setResultMessageAttribute(null, request);
-                        request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                        return;
-                    }
-                    // add products 
-                    for (ClientCar car : selectedCars) {
-                        try {
-                            Product product = new Product(null, acc, srvc, payment, car);
-                            databaseService.addEntities(new Object[]{product}, emf, utx);
-                        } catch (Exception e) {
-                            // db exception
-                            inputDataService.generateErrorResultMessage();
-                            inputDataService.setResultMessageAttribute(null, request);
-                            request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
-                            return;
-                        }
-                    }
-                    inputDataService.setResultMessageAttribute("Good job! With this service your vehicle(s) are safe once again!", request);
-                }
-                
+            // User has selected cars for the product.
+            // product id in selectedProductId session attribute
+            Integer selectedProductId = (Integer) request.getSession().getAttribute("selectedProductId");
+            ArrayList<ClientCar> selectedCars = getSelectedCars(request);
+            
+            // check if any cars selected
+            if (selectedCars.isEmpty()) {
+                request.getSession().setAttribute("carSelection", true);
+                inputDataService.setResultMessageAttribute("Products have to be related to at least one vehicle.", request);
                 request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                return;
             }
-        } 
+            pl.polsl.io.model.Package pckg;
+            SingleService srvc;
+            UserAccount acc;
+            Client client;
+            try {
+                acc = databaseService.getUserAccountEntity((String) request.getSession().getAttribute("currentUser"), "", emf);
+                client = databaseService.getClientEntityByAccount(acc, emf);
+                pckg = databaseService.getPackageById(selectedProductId, emf);
+                srvc = databaseService.getSingleServiceById(selectedProductId, emf);
+            } catch (Exception e) {
+                // db exception
+                inputDataService.generateErrorResultMessage();
+                inputDataService.setResultMessageAttribute(null, request);
+                request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+                return;
+            }
+            
+            ProductType productType = null;
+            Date expDate = null;
+            
+            if (pckg != null) {
+                productType = pckg;
+                // add one year to expiration date
+                Calendar c = Calendar.getInstance();
+                c.setTime(new Date());
+                c.add(Calendar.YEAR, 1);
+                expDate = c.getTime();
+            } else if (srvc != null) {
+                productType = srvc;
+            }
+            
+            addProductsAndPayments(request, selectedCars, client, acc, productType, expDate);
+            request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
+        }
     }
-    
+
     private void displayOffer(HttpServletRequest request) {
-            // fetch package offer
-            ArrayList<pl.polsl.io.model.Package> packageOffer;
-            try {
-                packageOffer = new ArrayList<>(databaseService.getPackages(emf));
-                // cheapest packages first
-                Collections.sort(packageOffer, (pl.polsl.io.model.Package lhs, pl.polsl.io.model.Package rhs) -> lhs.getPrice() > rhs.getPrice() ? 1 : -1);
-                request.getSession().setAttribute("packages", packageOffer);
-            } catch (Exception e) {
-                // db exception
-            }
-            // fetch sevices offer
-            ArrayList<SingleService> serviceOffer;
-            try {
-                serviceOffer = new ArrayList<>(databaseService.getSingleServices(emf));
-                // cheapest packages first
-                Collections.sort(serviceOffer, (SingleService lhs, SingleService rhs) -> lhs.getPrice() > rhs.getPrice() ? 1 : -1);
-                request.getSession().setAttribute("services", serviceOffer);
-            } catch (Exception e) {
-                // db exception
-            }
+        // fetch package offer
+        ArrayList<pl.polsl.io.model.Package> packageOffer;
+        try {
+            packageOffer = new ArrayList<>(databaseService.getPackages(emf));
+            // cheapest packages first
+            Collections.sort(packageOffer, (pl.polsl.io.model.Package lhs, pl.polsl.io.model.Package rhs) -> lhs.getPrice() > rhs.getPrice() ? 1 : -1);
+            request.getSession().setAttribute("packages", packageOffer);
+        } catch (Exception e) {
+            // db exception
+        }
+        // fetch sevices offer
+        ArrayList<SingleService> serviceOffer;
+        try {
+            serviceOffer = new ArrayList<>(databaseService.getSingleServices(emf));
+            // cheapest packages first
+            Collections.sort(serviceOffer, (SingleService lhs, SingleService rhs) -> lhs.getPrice() > rhs.getPrice() ? 1 : -1);
+            request.getSession().setAttribute("services", serviceOffer);
+        } catch (Exception e) {
+            // db exception
+        }
     }
-    
+
     private boolean isClientDataCorrect(HttpServletRequest request) {
         UserAccount acc;
         Client cln;
@@ -235,7 +164,31 @@ public class ProductSales extends HttpServlet {
         }
         return true;
     }
+
+    private void handleProductSelected(HttpServletRequest request) {
+        // A package or service was selected for buying.
+        String selProductId = request.getParameter("productSelected");
+        if (selProductId != null && isClientDataCorrect(request)) {
+            displayCarSelection(request);
+            // selProductId is always product id (as generated number)
+            request.getSession().setAttribute("selectedProductId", Integer.valueOf(selProductId));
+        }
+
+    }
     
+    private ArrayList<ClientCar> getSelectedCars(HttpServletRequest request) {
+        // cars displayed in clientCars session attribute
+        ArrayList<ClientCar> clientCars = (ArrayList<ClientCar>) request.getSession().getAttribute("clientCars");
+        // check box returns null if not checked
+        ArrayList<ClientCar> selectedCars = new ArrayList<>();
+        for (ClientCar car : clientCars) {
+            if (request.getParameter(car.getLicenseNumber()) != null) {
+                selectedCars.add(car);
+            }
+        }
+        return selectedCars;   
+    }
+
     private void displayCarSelection(HttpServletRequest request) {
         UserAccount acc;
         Client cln;
@@ -253,6 +206,22 @@ public class ProductSales extends HttpServlet {
         // request car selection display
         request.getSession().setAttribute("carSelection", true);
         request.getSession().setAttribute("clientCars", clientCars);
+    }
+    
+    private void addProductsAndPayments(HttpServletRequest request,  ArrayList<ClientCar> selectedCars, Client client, UserAccount acc, ProductType productType, Date expDate) {
+        for (ClientCar car : selectedCars) {
+            try {
+                Payment payment = new Payment(productType.getPrice(), "", true, new Date(), client);
+                Product product = new Product(expDate, acc, productType, payment, car);
+                databaseService.addEntities(new Object[]{payment, product}, emf, utx);
+            } catch (Exception e) {
+                // db exception
+                inputDataService.generateErrorResultMessage();
+                inputDataService.setResultMessageAttribute(null, request);
+                return;
+            }
+        }
+        inputDataService.setResultMessageAttribute("Good job! With this product your vehicle(s) are safe once again!", request);
     }
 
     /**
