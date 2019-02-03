@@ -105,7 +105,7 @@ public class ProductSales extends HttpServlet {
                     request.getRequestDispatcher("/OurProductsPage.jsp").forward(request, response);
                     return;
                 }
-                // get selected package
+                // get selected package or service
                 pl.polsl.io.model.Package pckg;
                 SingleService srvc;
                 try {

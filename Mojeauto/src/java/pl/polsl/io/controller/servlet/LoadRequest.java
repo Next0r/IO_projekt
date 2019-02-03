@@ -2,7 +2,7 @@ package pl.polsl.io.controller.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -15,8 +15,8 @@ import javax.transaction.UserTransaction;
 import pl.polsl.io.model.AssistanceRequest;
 import pl.polsl.io.model.Client;
 import pl.polsl.io.model.ClientCar;
-import pl.polsl.io.model.Payment;
 import pl.polsl.io.model.Product;
+import pl.polsl.io.model.ProductType;
 import pl.polsl.io.model.SingleService;
 import pl.polsl.io.model.UserAccount;
 import pl.polsl.io.service.DatabaseService;
@@ -83,11 +83,13 @@ public class LoadRequest extends HttpServlet {
             displayClientCars(request, cln);
             request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
         } else {
-
+           
             String licenseNumber = inputDataService.nullStringTrim(request.getParameter("selectedCar"));
             ClientCar car;
+            List<Product> availableProducts;
             try {
                 car = databaseService.getClientCarByLicenseNumber(licenseNumber, emf);
+                availableProducts = databaseService.getProductsByClientCar(car, emf);
             } catch (Exception e) {
                 // db exception
                 inputDataService.generateErrorResultMessage();
@@ -96,46 +98,27 @@ public class LoadRequest extends HttpServlet {
                 return;
             }
             
-            try {
-                sServices = new ArrayList<>(databaseService.getSingleServices(emf));
-            } catch (Exception e) {
-                inputDataService.generateErrorResultMessage();
-                inputDataService.setResultMessageAttribute(null, request);
-                request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
-                return;
-            }
             String description = inputDataService.nullStringTrim(request.getParameter("description"));
-            ArrayList<SingleService> selectedServices = new ArrayList<>();
-            // load selected services
-            for (SingleService service : sServices) {
-                if (request.getParameter(service.getProductTypeID().toString()) != null) {
-                    selectedServices.add(service);
-                }
-            }
-            if (selectedServices.isEmpty() && (description == null || description.isEmpty())) {
+            ArrayList<SingleService> selectedServices = getSelectedServices(request);
+
+            if ((selectedServices == null || selectedServices.isEmpty()) && (description == null || description.isEmpty())) {
                 inputDataService.setResultMessageAttribute("Select at least one service or insert description.", request);
                 request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
                 return;
             }
-
-            ArrayList<Product> products = new ArrayList<>();
-            ArrayList<Payment> payments = new ArrayList<>();
-            ArrayList<AssistanceRequest> assistanceRq = new ArrayList<>();
-
-            // if services were selected create products based on them
-            for (SingleService service : selectedServices) {
-                Payment payment = new Payment(service.getPrice(), "", false, new Date());
-                products.add(new Product(null, null, service, payment, car));
-                payments.add(payment);
+              
+            List<Product> neededProducts = getNeededProducts(availableProducts, selectedServices);
+            if (neededProducts == null) {
+                inputDataService.setResultMessageAttribute("You don't own the required products to make this request. Please check your account and buy neccessary products.", request);
+                request.getRequestDispatcher("/RequestAssistancePage.jsp").forward(request, response);
+                return;
             }
+            
+            //Create assistance request.
+            AssistanceRequest assistanceRequest = new AssistanceRequest(car, neededProducts, description);
 
-            assistanceRq.add(new AssistanceRequest(cln, products, description));
-            Stream stream = Stream.concat(products.stream(), payments.stream());
-            stream = Stream.concat(stream, assistanceRq.stream());
-
-            // put new payments and products (single services) with assistance request to db
             try {
-                databaseService.addEntities(stream.toArray(), emf, utx);
+                databaseService.addEntities(new Object[]{assistanceRequest}, emf, utx);
             } catch (Exception e) {
                 // db exception
                 inputDataService.generateErrorResultMessage();
@@ -148,7 +131,7 @@ public class LoadRequest extends HttpServlet {
         }
     }
     
-    void displayClientData(HttpServletRequest request, UserAccount acc, Client cln){
+    private void displayClientData(HttpServletRequest request, UserAccount acc, Client cln){
                     if (acc != null && cln != null) {
                 // fetching user paramters to webpage
                 if (cln.getName().equals("_")) {
@@ -165,7 +148,7 @@ public class LoadRequest extends HttpServlet {
             }
     }
     
-    void displayServices(HttpServletRequest request) {
+    private void displayServices(HttpServletRequest request) {
             try {
                 ArrayList<SingleService> sServices = new ArrayList<>(databaseService.getSingleServices(emf));
                 SingleService unncessarySingleService = null;
@@ -183,7 +166,7 @@ public class LoadRequest extends HttpServlet {
             }
     }
     
-    void displayClientCars(HttpServletRequest request, Client cln){
+    private void displayClientCars(HttpServletRequest request, Client cln){
         ArrayList<ClientCar> clientCars;
         try {
             clientCars = new ArrayList<>(databaseService.getClientCarsByClient(cln, emf));
@@ -196,6 +179,75 @@ public class LoadRequest extends HttpServlet {
         // request car selection display
         request.getSession().setAttribute("clientCars", clientCars);
     }
+    
+    private boolean canClientRequestAssistance( List<Product> availableProducts, ArrayList<SingleService> selectedServices) {
+        for (ProductType s : selectedServices) {
+            boolean productExists = false;
+            for (Product p : availableProducts) {
+                if (p.getProductType() == s){
+                    productExists = true;
+                }
+            }
+            if (!productExists){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private List<Product> getNeededProducts(List<Product> availableProducts, ArrayList<SingleService> selectedServices) {
+        
+        List<Product> neededProducts = new ArrayList<>();
+        for (ProductType selectedService : selectedServices) {
+            boolean productExists = false;
+            for (Product p : availableProducts) {
+                if (p.getProductType().getName().equals(selectedService.getName())){
+                    productExists = true;
+                    neededProducts.add(p);
+                    break;
+                } else if (p.getProductType().getName().contains("Package")) {
+                    pl.polsl.io.model.Package pck = (pl.polsl.io.model.Package) p.getProductType();
+                    for (SingleService s : pck.getSingleServices()) {
+                        if (s.getName().equals(selectedService.getName())) {
+                            productExists = true;
+                            neededProducts.add(p);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!productExists){
+                return null;
+            }
+        }
+                
+        for (Product p : availableProducts) {
+            if (!p.getProductType().getName().contains("Request assistance") && !p.getProductType().getName().contains("Package")) {
+                return null;
+            }
+        }
+        return neededProducts;
+    }
+    
+    private ArrayList<SingleService> getSelectedServices(HttpServletRequest request){
+        ArrayList<SingleService> sServices = null;
+        ArrayList<SingleService> selectedServices = new ArrayList<>();
+        try {
+            sServices = new ArrayList<>(databaseService.getSingleServices(emf));
+        } catch (Exception e) {
+            inputDataService.generateErrorResultMessage();
+            inputDataService.setResultMessageAttribute(null, request);
+            return null;
+        }
+            // load selected services
+            for (SingleService service : sServices) {
+                if (request.getParameter(service.getProductTypeID().toString()) != null) {
+                    selectedServices.add(service);
+                }
+            }
+        return selectedServices;
+    }
+   
 
     /**
      * Handles the HTTP <code>GET</code> method.

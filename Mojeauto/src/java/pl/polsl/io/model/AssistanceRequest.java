@@ -29,9 +29,9 @@ public class AssistanceRequest {
     @Column(name = "REQUEST_ID")
     private Integer requestID;
     
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "CLIENT_ID")
-    private Client client;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "CLIENTCAR_ID")
+    private ClientCar clientCar;
     
     @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn(name = "PRODUCTS")
@@ -43,8 +43,8 @@ public class AssistanceRequest {
 
     public AssistanceRequest() {}
     
-    public AssistanceRequest(Client client, List<Product> product, String clnDescription){
-       this.client = client;
+    public AssistanceRequest(ClientCar clientCar, List<Product> product, String clnDescription){
+       this.clientCar = clientCar;
        this.products = product;
        this.clnDescription = clnDescription;
     }
@@ -66,12 +66,12 @@ public class AssistanceRequest {
     }
 
 
-    public Client getClient() {
-        return client;
+    public ClientCar getClientCar() {
+        return clientCar;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientCar(ClientCar clientCar) {
+        this.clientCar = clientCar;
     }
 
     public List<Product> getProduct() {
@@ -81,7 +81,5 @@ public class AssistanceRequest {
     public void setProduct(List<Product> products) {
         this.products = products;
     }
-    
-    
-    
+
 }
